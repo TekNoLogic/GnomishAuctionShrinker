@@ -135,6 +135,9 @@ function QueryAuctionItems(...) searched = true; return orig(...) end
 
 local scrollbar, upbutt, downbutt = BrowseScrollFrameScrollBar, BrowseScrollFrameScrollBarScrollUpButton, BrowseScrollFrameScrollBarScrollDownButton
 scrollbar.RealSetValue, scrollbar.SetValue = scrollbar.SetValue, noop
+scrollbar.RealSetMinMaxValues, scrollbar.SetMinMaxValues = scrollbar.SetMinMaxValues, noop
+scrollbar.RealSetValueStep, scrollbar.SetValueStep = scrollbar.SetValueStep, noop
+
 local offset, timeframes = 0, {"<30m", "30m-2h", "2-12hr", ">12hr"}
 local function Update(self, event)
 	if event == "AUCTION_ITEM_LIST_UPDATE" and searched then searched = false; scrollbar:RealSetValue(0) end
@@ -189,8 +192,8 @@ local function Update(self, event)
 		BrowseSearchCountText:Show()
 		prevbutt:RealShow()
 		nextbutt:RealShow()
-		scrollbar:SetMinMaxValues(0, numBatchAuctions-NUM_ROWS)
-		scrollbar:SetValueStep(1)
+		scrollbar:RealSetMinMaxValues(0, numBatchAuctions-NUM_ROWS)
+		scrollbar:RealSetValueStep(1)
 	end
 
 	if AuctionFrameBrowse.page == 0 then prevbutt:RealDisable() else prevbutt:RealEnable() end
