@@ -2,6 +2,7 @@
 local NUM_ROWS, BOTTOM_GAP = 14, 25
 local ROW_HEIGHT = math.floor((305-BOTTOM_GAP)/NUM_ROWS)
 local TEXT_GAP = 4
+local noop = function() end
 
 
 local function GSC(cash)
@@ -23,6 +24,32 @@ end
 local panel = CreateFrame("Frame", nil, AuctionFrameBrowse)
 panel:SetWidth(605) panel:SetHeight(305)
 panel:SetPoint("TOPLEFT", 188, -103)
+
+
+local nextbutt, prevbutt, counttext = BrowseNextPageButton, BrowsePrevPageButton, BrowseSearchCountText
+nextbutt:SetParent(panel)
+nextbutt:SetWidth(24) nextbutt:SetHeight(24)
+nextbutt:ClearAllPoints()
+nextbutt:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", 0, 0)
+nextbutt:Show()
+nextbutt.RealShow, nextbutt.RealHide, nextbutt.RealEnable, nextbutt.RealDisable = nextbutt.Show, nextbutt.Hide, nextbutt.Enable, nextbutt.Disable
+nextbutt.Show, nextbutt.Hide, nextbutt.Enable, nextbutt.Disable = noop, noop, noop, noop
+nextbutt:GetRegions():Hide()
+
+prevbutt:SetParent(panel)
+prevbutt:SetWidth(24) prevbutt:SetHeight(24)
+prevbutt:ClearAllPoints()
+prevbutt:SetPoint("RIGHT", nextbutt, "LEFT")
+prevbutt:Show()
+prevbutt.RealShow, prevbutt.RealHide, prevbutt.RealEnable, prevbutt.RealDisable = prevbutt.Show, prevbutt.Hide, prevbutt.Enable, prevbutt.Disable
+prevbutt.Show, prevbutt.Hide, prevbutt.Enable, prevbutt.Disable = noop, noop, noop, noop
+prevbutt:GetRegions():Hide()
+
+counttext:SetParent(panel)
+counttext:ClearAllPoints()
+counttext:SetPoint("RIGHT", prevbutt, "LEFT")
+counttext:Show()
+counttext.Hide = counttext.Show
 
 
 local rows = {}
@@ -139,6 +166,24 @@ local function Update(...)
 			row:Disable()
 		end
 	end
+
+	local numBatchAuctions, totalAuctions = GetNumAuctionItems("list")
+	local itemsMin = AuctionFrameBrowse.page * NUM_AUCTION_ITEMS_PER_PAGE + 1
+	local itemsMax = itemsMin + numBatchAuctions - 1
+
+	if totalAuctions == 0 then
+		BrowseSearchCountText:Hide()
+		prevbutt:RealHide()
+		nextbutt:RealHide()
+	else
+		BrowseSearchCountText:SetFormattedText(NUMBER_OF_RESULTS_TEMPLATE, itemsMin, itemsMax, totalAuctions)
+		BrowseSearchCountText:Show()
+		prevbutt:RealShow()
+		nextbutt:RealShow()
+	end
+
+	if AuctionFrameBrowse.page == 0 then prevbutt:RealDisable() else prevbutt:RealEnable() end
+	if AuctionFrameBrowse.page == (math.ceil(totalAuctions/NUM_AUCTION_ITEMS_PER_PAGE) - 1) then nextbutt:RealDisable() else nextbutt:RealEnable() end
 end
 
 panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
