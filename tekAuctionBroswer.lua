@@ -129,16 +129,25 @@ for i=1,NUM_ROWS do
 	row.qty = qty
 end
 
-local timeframes = {"<30m", "30m-2h", "2-12hr", ">12hr"}
-local function Update(...)
+
+local orig, searched = QueryAuctionItems, false
+function QueryAuctionItems(...) searched = true; return orig(...) end
+
+local scrollbar, upbutt, downbutt = BrowseScrollFrameScrollBar, BrowseScrollFrameScrollBarScrollUpButton, BrowseScrollFrameScrollBarScrollDownButton
+scrollbar.RealSetValue, scrollbar.SetValue = scrollbar.SetValue, noop
+local offset, timeframes = 0, {"<30m", "30m-2h", "2-12hr", ">12hr"}
+local function Update(self, event)
+	if event == "AUCTION_ITEM_LIST_UPDATE" and searched then searched = false; scrollbar:RealSetValue(0) end
+
 	for i,row in pairs(rows) do
-		local name, texture, count, quality, canUse, level, minBid, minIncrement, buyout, bidAmount, highBidder, owner = GetAuctionItemInfo("list", i)
+		local index = offset + i
+		local name, texture, count, quality, canUse, level, minBid, minIncrement, buyout, bidAmount, highBidder, owner = GetAuctionItemInfo("list", index)
 
 		if name then
 			local color = ITEM_QUALITY_COLORS[quality]
-			local link = GetAuctionItemLink("list", i)
+			local link = GetAuctionItemLink("list", index)
 			local _, _, _, iLevel = GetItemInfo(link)
-			local duration = GetAuctionItemTimeLeft("list", i)
+			local duration = GetAuctionItemTimeLeft("list", index)
 
 			row.icon:SetTexture(texture)
 			row.name:SetText(name)
@@ -180,6 +189,8 @@ local function Update(...)
 		BrowseSearchCountText:Show()
 		prevbutt:RealShow()
 		nextbutt:RealShow()
+		scrollbar:SetMinMaxValues(0, numBatchAuctions-NUM_ROWS)
+		scrollbar:SetValueStep(1)
 	end
 
 	if AuctionFrameBrowse.page == 0 then prevbutt:RealDisable() else prevbutt:RealEnable() end
@@ -189,6 +200,19 @@ end
 panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
 panel:SetScript("OnEvent", Update)
 panel:SetScript("OnShow", Update)
+panel:SetScript("OnMouseWheel", function(self, value) scrollbar:RealSetValue(scrollbar:GetValue() - value*10) end)
+panel:EnableMouseWheel()
+
+
+scrollbar:SetScript("OnValueChanged", function(self, value, ...)
+	offset = value
+	local min, max = self:GetMinMaxValues()
+	if value == min then upbutt:Disable() else upbutt:Enable() end
+	if value == max then downbutt:Disable() else downbutt:Enable() end
+	Update()
+end)
+upbutt:SetScript("OnClick", function() scrollbar:RealSetValue(scrollbar:GetValue() - 10); PlaySound("UChatScrollButton") end)
+downbutt:SetScript("OnClick", function() scrollbar:RealSetValue(scrollbar:GetValue() + 10); PlaySound("UChatScrollButton") end)
 
 
 LibStub("tekKonfig-AboutPanel").new(nil, "tekAuctionBroswer")
