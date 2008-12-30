@@ -129,19 +129,17 @@ for i=1,NUM_ROWS do
 	row.qty = qty
 end
 
-
-local orig, searched = QueryAuctionItems, false
-function QueryAuctionItems(...) searched = true; return orig(...) end
-
 local scrollbar, upbutt, downbutt = BrowseScrollFrameScrollBar, BrowseScrollFrameScrollBarScrollUpButton, BrowseScrollFrameScrollBarScrollDownButton
 scrollbar.RealSetValue, scrollbar.SetValue = scrollbar.SetValue, noop
 scrollbar.RealSetMinMaxValues, scrollbar.SetMinMaxValues = scrollbar.SetMinMaxValues, noop
 scrollbar.RealSetValueStep, scrollbar.SetValueStep = scrollbar.SetValueStep, noop
 
+
+local orig = QueryAuctionItems
+function QueryAuctionItems(...) scrollbar:RealSetValue(0); return orig(...) end
+
 local offset, timeframes = 0, {"<30m", "30m-2h", "2-12hr", ">12hr"}
 local function Update(self, event)
-	if event == "AUCTION_ITEM_LIST_UPDATE" and searched then searched = false; scrollbar:RealSetValue(0) end
-
 	for i,row in pairs(rows) do
 		local index = offset + i
 		local name, texture, count, quality, canUse, level, minBid, minIncrement, buyout, bidAmount, highBidder, owner = GetAuctionItemInfo("list", index)
