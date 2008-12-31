@@ -61,7 +61,11 @@ counttext.Hide = counttext.Show
 local Update
 local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetValue() - value*10) end
 local function RowOnClick(self)
-	if IsModifiedClick() then HandleModifiedItemClick(self.link)
+	if IsAltKeyDown() then
+		SetSelectedAuctionItem("list", self.index)
+		PlaceAuctionBid("list", self.index, (select(9, GetAuctionItemInfo("list", self.index))))
+		CloseAuctionStaticPopups()
+	elseif IsModifiedClick() then HandleModifiedItemClick(self.link)
 	else
 		if GetCVarBool("auctionDisplayOnCharacter") then DressUpItemLink(self.link) end
 		SetSelectedAuctionItem("list", self.index)
