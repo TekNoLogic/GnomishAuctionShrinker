@@ -247,8 +247,15 @@ function Update(self, event)
 		BrowseSearchCountText:Show()
 		prevbutt:RealShow()
 		nextbutt:RealShow()
-		scrollbar:RealSetMinMaxValues(0, numBatchAuctions-NUM_ROWS)
-		scrollbar:RealSetValueStep(1)
+		if numBatchAuctions-NUM_ROWS <= 0 then
+			scrollbar:Disable()
+			upbutt:Disable()
+			downbutt:Disable()
+		else
+			scrollbar:Enable()
+			scrollbar:RealSetMinMaxValues(0, numBatchAuctions-NUM_ROWS)
+			scrollbar:RealSetValueStep(1)
+		end
 	end
 
 	if AuctionFrameBrowse.page == 0 then prevbutt:RealDisable() else prevbutt:RealEnable() end
