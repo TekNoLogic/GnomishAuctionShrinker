@@ -180,7 +180,7 @@ function Update(self, event)
 		if name then
 			local color = ITEM_QUALITY_COLORS[quality]
 			local link = GetAuctionItemLink("list", index)
-			local _, _, _, iLevel = GetItemInfo(link)
+			local _, _, _, iLevel, _, _, _, maxStack = GetItemInfo(link)
 			local duration = GetAuctionItemTimeLeft("list", index)
 
 			row.icon:SetNormalTexture(texture)
@@ -192,8 +192,8 @@ function Update(self, event)
 			row.timeleft:SetText(timeframes[duration])
 			row.bid:SetText(GSC(minBid) or "----")
 			row.buyout:SetText(buyout > 0 and GSC(buyout) or "----")
-			row.unit:SetText(buyout > 0 and count > 1 and GSC(buyout/count) or "----")
-			row.qty:SetText(count)
+			row.unit:SetText(buyout > 0 and maxStack > 1 and GSC(buyout/count) or "----")
+			row.qty:SetText(maxStack > 1 and count)
 			row:Enable()
 
 			row.index, row.link = index, link
