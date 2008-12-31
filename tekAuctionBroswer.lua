@@ -26,6 +26,12 @@ panel:SetWidth(605) panel:SetHeight(305)
 panel:SetPoint("TOPLEFT", 188, -103)
 
 
+local bidbutt, buybutt = BrowseBidButton, BrowseBuyoutButton
+
+local scrollbar, upbutt, downbutt = BrowseScrollFrameScrollBar, BrowseScrollFrameScrollBarScrollUpButton, BrowseScrollFrameScrollBarScrollDownButton
+scrollbar.RealSetValue, scrollbar.RealSetMinMaxValues, scrollbar.RealSetValueStep = scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep
+scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep = noop, noop, noop
+
 local nextbutt, prevbutt, counttext = BrowseNextPageButton, BrowsePrevPageButton, BrowseSearchCountText
 nextbutt:SetParent(panel)
 nextbutt:SetWidth(24) nextbutt:SetHeight(24)
@@ -52,22 +58,36 @@ counttext:Show()
 counttext.Hide = counttext.Show
 
 
+local Update
+local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetValue() - value*10) end
+local function RowOnClick(self)
+	if IsModifiedClick() then HandleModifiedItemClick(self.link)
+	else
+		if GetCVarBool("auctionDisplayOnCharacter") then DressUpItemLink(self.link) end
+		SetSelectedAuctionItem("list", self.index)
+		CloseAuctionStaticPopups() -- Close any auction related popups
+		Update()
+	end
+end
+
 local rows = {}
 for i=1,NUM_ROWS do
-	local row = CreateFrame("CheckButton", nil, panel)
+	local row = CreateFrame("Button", nil, panel)
 	row:SetHeight(ROW_HEIGHT)
 	row:SetPoint("LEFT")
 	row:SetPoint("RIGHT")
 	if i == 1 then row:SetPoint("TOP")
 	else row:SetPoint("TOP", rows[i-1], "BOTTOM") end
+	row:SetScript("OnClick", RowOnClick)
+	row:SetScript("OnMouseWheel", OnMouseWheel)
+	row:EnableMouseWheel()
 	row:Disable()
 	rows[i] = row
 
+
+
 	row:SetHighlightTexture("Interface\\HelpFrame\\HelpFrameButton-Highlight")
 	row:GetHighlightTexture():SetTexCoord(0, 1, 0, 0.578125)
-
-	row:SetCheckedTexture("Interface\\HelpFrame\\HelpFrameButton-Highlight")
-	row:GetCheckedTexture():SetTexCoord(0, 1, 0, 0.578125)
 
 	local icon = row:CreateTexture()
 	icon:SetWidth(ROW_HEIGHT-2) icon:SetHeight(ROW_HEIGHT-2)
@@ -129,20 +149,23 @@ for i=1,NUM_ROWS do
 	row.qty = qty
 end
 
-local scrollbar, upbutt, downbutt = BrowseScrollFrameScrollBar, BrowseScrollFrameScrollBarScrollUpButton, BrowseScrollFrameScrollBarScrollDownButton
-scrollbar.RealSetValue, scrollbar.SetValue = scrollbar.SetValue, noop
-scrollbar.RealSetMinMaxValues, scrollbar.SetMinMaxValues = scrollbar.SetMinMaxValues, noop
-scrollbar.RealSetValueStep, scrollbar.SetValueStep = scrollbar.SetValueStep, noop
-
 
 local orig = QueryAuctionItems
 function QueryAuctionItems(...) scrollbar:RealSetValue(0); return orig(...) end
 
 local offset, timeframes = 0, {"<30m", "30m-2h", "2-12hr", ">12hr"}
-local function Update(self, event)
+function Update(self, event)
+	local selected = GetSelectedAuctionItem("list")
+	AuctionFrame.buyoutPrice = nil
+	bidbutt:Disable()
+	buybutt:Disable()
+
 	for i,row in pairs(rows) do
 		local index = offset + i
 		local name, texture, count, quality, canUse, level, minBid, minIncrement, buyout, bidAmount, highBidder, owner = GetAuctionItemInfo("list", index)
+		local displayedBid = bidAmount == 0 and minBid or bidAmount
+		local requiredBid = bidAmount == 0 and minBid or bidAmount + minIncrement
+		if requiredBid >= MAXIMUM_BID_PRICE then buyoutPrice = requiredBid end -- Lie about our buyout price
 
 		if name then
 			local color = ITEM_QUALITY_COLORS[quality]
@@ -162,6 +185,8 @@ local function Update(self, event)
 			row.unit:SetText(buyout > 0 and count > 1 and GSC(buyout/count) or "----")
 			row.qty:SetText(count)
 			row:Enable()
+
+			row.index, row.link = index, link
 		else
 			row.icon:SetTexture()
 			row.name:SetText()
@@ -174,6 +199,24 @@ local function Update(self, event)
 			row.unit:SetText()
 			row.qty:SetText()
 			row:Disable()
+
+			row.index, row.link = nil
+		end
+
+		if selected and index == selected then
+			row:LockHighlight()
+
+			MoneyInputFrame_SetCopper(BrowseBidPrice, requiredBid) -- Set bid
+			if not highBidder and owner ~= UnitName("player") and GetMoney() >= MoneyInputFrame_GetCopper(BrowseBidPrice) and MoneyInputFrame_GetCopper(BrowseBidPrice) <= MAXIMUM_BID_PRICE then bidbutt:Enable() end
+
+			if buyout > 0 and buyout >= minBid then
+				if GetMoney() >= buyout or (highBidder and GetMoney()+bidAmount >= buyout) then
+					buybutt:Enable()
+					AuctionFrame.buyoutPrice = buyout
+				end
+			end
+		else
+			row:UnlockHighlight()
 		end
 	end
 
@@ -201,7 +244,7 @@ end
 panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
 panel:SetScript("OnEvent", Update)
 panel:SetScript("OnShow", Update)
-panel:SetScript("OnMouseWheel", function(self, value) scrollbar:RealSetValue(scrollbar:GetValue() - value*10) end)
+panel:SetScript("OnMouseWheel", OnMouseWheel)
 panel:EnableMouseWheel()
 
 
