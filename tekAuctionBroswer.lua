@@ -69,6 +69,15 @@ local function RowOnClick(self)
 		Update()
 	end
 end
+local function IconOnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+	GameTooltip:SetAuctionItem("list", self.row.index)
+
+	GameTooltip_ShowCompareItem()
+
+	if IsModifiedClick("DRESSUP") then ShowInspectCursor() else ResetCursor() end
+end
+local function HideTooltip() GameTooltip:Hide() end
 
 local rows = {}
 for i=1,NUM_ROWS do
@@ -84,14 +93,15 @@ for i=1,NUM_ROWS do
 	row:Disable()
 	rows[i] = row
 
-
-
 	row:SetHighlightTexture("Interface\\HelpFrame\\HelpFrameButton-Highlight")
 	row:GetHighlightTexture():SetTexCoord(0, 1, 0, 0.578125)
 
-	local icon = row:CreateTexture()
+	local icon = CreateFrame("Button", nil, row)
+	icon:SetScript("OnEnter", IconOnEnter)
+	icon:SetScript("OnLeave", HideTooltip)
 	icon:SetWidth(ROW_HEIGHT-2) icon:SetHeight(ROW_HEIGHT-2)
 	icon:SetPoint("LEFT", row, TEXT_GAP, 0)
+	icon.row = row
 	row.icon = icon
 
 	local name = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
@@ -173,7 +183,7 @@ function Update(self, event)
 			local _, _, _, iLevel = GetItemInfo(link)
 			local duration = GetAuctionItemTimeLeft("list", index)
 
-			row.icon:SetTexture(texture)
+			row.icon:SetNormalTexture(texture)
 			row.name:SetText(name)
 			row.name:SetVertexColor(color.r, color.g, color.b)
 			row.min:SetText(level ~= 1 and level)
@@ -188,7 +198,7 @@ function Update(self, event)
 
 			row.index, row.link = index, link
 		else
-			row.icon:SetTexture()
+			row.icon:SetNormalTexture(nil)
 			row.name:SetText()
 			row.min:SetText()
 			row.ilvl:SetText()
