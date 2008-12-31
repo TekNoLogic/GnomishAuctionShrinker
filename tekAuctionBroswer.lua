@@ -74,6 +74,8 @@ local function RowOnClick(self)
 	end
 end
 local function IconOnEnter(self)
+	if not self.row.index then return end
+
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	GameTooltip:SetAuctionItem("list", self.row.index)
 
