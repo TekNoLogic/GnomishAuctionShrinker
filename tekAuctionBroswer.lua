@@ -14,16 +14,21 @@ local function GSC(cash)
 end
 
 
+---------------------
+--      Panel      --
+---------------------
+
+local panel = CreateFrame("Frame", nil, AuctionFrameBrowse)
+panel:SetWidth(605) panel:SetHeight(305)
+panel:SetPoint("TOPLEFT", 188, -103)
+
+
+-- Hide default panels
 for i=1,8 do
 	local butt = _G["BrowseButton"..i]
 	butt:Hide()
 	butt.Show = butt.Hide
 end
-
-
-local panel = CreateFrame("Frame", nil, AuctionFrameBrowse)
-panel:SetWidth(605) panel:SetHeight(305)
-panel:SetPoint("TOPLEFT", 188, -103)
 
 
 local bidbutt, buybutt = BrowseBidButton, BrowseBuyoutButton
@@ -166,6 +171,10 @@ for i=1,NUM_ROWS do
 end
 
 
+-----------------------
+--      Updater      --
+-----------------------
+
 local orig = QueryAuctionItems
 function QueryAuctionItems(...) scrollbar:RealSetValue(0); return orig(...) end
 
@@ -267,10 +276,14 @@ end
 panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
 panel:SetScript("OnEvent", Update)
 panel:SetScript("OnShow", Update)
+
+
+-------------------------
+--      Scrolling      --
+-------------------------
+
 panel:SetScript("OnMouseWheel", OnMouseWheel)
 panel:EnableMouseWheel()
-
-
 scrollbar:SetScript("OnValueChanged", function(self, value, ...)
 	offset = value
 	local min, max = self:GetMinMaxValues()
