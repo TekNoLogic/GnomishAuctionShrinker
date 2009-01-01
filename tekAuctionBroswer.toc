@@ -14,4 +14,5 @@
 LibStub.lua
 tekKonfigAboutPanel.lua
 
+SortButton.lua
 tekAuctionBroswer.lua
