@@ -295,4 +295,29 @@ upbutt:SetScript("OnClick", function() scrollbar:RealSetValue(scrollbar:GetValue
 downbutt:SetScript("OnClick", function() scrollbar:RealSetValue(scrollbar:GetValue() + 10); PlaySound("UChatScrollButton") end)
 
 
+-----------------------
+--      Headers      --
+-----------------------
+
+local row = rows[1]
+
+local function AnchorSort(butt, left, right, loffset)
+	right, loffset = right or left, loffset or (-TEXT_GAP/2 - 1)
+	butt:ClearAllPoints()
+	butt:SetPoint("TOP", AuctionFrameBrowse, "TOP", 0, -82)
+	butt:SetPoint("LEFT", left, "LEFT", loffset, 0)
+	butt:SetPoint("RIGHT", right, "RIGHT", TEXT_GAP/2 + 1, 0)
+	butt.SetWidth = noop
+end
+
+AnchorSort(BrowseQualitySort, row.icon, row.name, -TEXT_GAP - 2)
+AnchorSort(BrowseLevelSort, row.min)
+AnchorSort(BrowseHighBidderSort, row.owner)
+AnchorSort(BrowseDurationSort, row.timeleft)
+AnchorSort(BrowseCurrentBidSort, row.bid)
+
+BrowseDurationSort:SetText("Time")
+BrowseCurrentBidSort:SetText("Bid")
+
+
 LibStub("tekKonfig-AboutPanel").new(nil, "tekAuctionBroswer")
