@@ -63,7 +63,7 @@ counttext:Show()
 counttext.Hide = counttext.Show
 
 
-local Update
+local Update, UpdateArrows
 local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetValue() - value*10) end
 local function RowOnClick(self)
 	if IsAltKeyDown() then
@@ -271,6 +271,8 @@ function Update(self, event)
 
 	if AuctionFrameBrowse.page == 0 then prevbutt:RealDisable() else prevbutt:RealEnable() end
 	if AuctionFrameBrowse.page == (math.ceil(totalAuctions/NUM_AUCTION_ITEMS_PER_PAGE) - 1) then nextbutt:RealDisable() else nextbutt:RealEnable() end
+
+	UpdateArrows()
 end
 
 panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
@@ -310,14 +312,80 @@ local function AnchorSort(butt, left, right, loffset)
 	butt.SetWidth = noop
 end
 
+local sorts = {
+	buyout     = {"duration", "quantity", "name", "level", "quality", "bid", "buyout"},
+	buyout_rev = {     false,       true,  false,    true,     false, false,    false},
+	quantity     = {"duration", "buyoutthenbid", "name", "level", "quality", "quantity"},
+	quantity_rev = {     false,           false,  false,    true,     false,       true},
+}
+local function SortAuctions(self)
+	local existingSortColumn, existingSortReverse = GetAuctionSort("list", 1) -- change the sort as appropriate
+	local oppositeOrder = false
+	if existingSortColumn and existingSortColumn == self.sortcolumn then oppositeOrder = not existingSortReverse end
+
+	SortAuctionClearSort("list") -- clear the existing sort.
+
+	local revs = sorts[self.sortcolumn.."_rev"]
+	for i,column in ipairs(sorts[self.sortcolumn]) do -- set the columns
+		local reverse = revs[i]
+		if i == #revs and existingSortColumn and existingSortColumn == self.sortcolumn and (not not existingSortReverse) == reverse then reverse = not reverse end
+		SortAuctionSetSort("list", column, reverse)
+	end
+
+	AuctionFrameBrowse_Search() -- apply the sort
+end
+
+local ilvlsort = CreateFrame("Button", "tekauc_iLvlSort", AuctionFrameBrowse, "AuctionSortButtonTemplate")
+local buyoutsort = CreateFrame("Button", "tekauc_buyoutSort", AuctionFrameBrowse, "AuctionSortButtonTemplate")
+local unitsort = CreateFrame("Button", "tekauc_unitSort", AuctionFrameBrowse, "AuctionSortButtonTemplate")
+local qtysort = CreateFrame("Button", "tekauc_qtySort", AuctionFrameBrowse, "AuctionSortButtonTemplate")
+
+ilvlsort:SetHeight(19)
+buyoutsort:SetHeight(19)
+unitsort:SetHeight(19)
+qtysort:SetHeight(19)
+
+tekauc_iLvlSortArrow:Hide()
+tekauc_buyoutSortArrow:Hide()
+tekauc_unitSortArrow:Hide()
+tekauc_qtySortArrow:Hide()
+
+ilvlsort:Disable()
+unitsort:Disable()
+
+buyoutsort.sortcolumn = "buyout"
+qtysort.sortcolumn = "quantity"
+
+buyoutsort:SetScript("OnClick", SortAuctions)
+qtysort:SetScript("OnClick", SortAuctions)
+
 AnchorSort(BrowseQualitySort, row.icon, row.name, -TEXT_GAP - 2)
 AnchorSort(BrowseLevelSort, row.min)
 AnchorSort(BrowseHighBidderSort, row.owner)
 AnchorSort(BrowseDurationSort, row.timeleft)
 AnchorSort(BrowseCurrentBidSort, row.bid)
+AnchorSort(ilvlsort, row.ilvl)
+AnchorSort(buyoutsort, row.buyout)
+AnchorSort(unitsort, row.unit)
+AnchorSort(qtysort, row.qty)
 
 BrowseDurationSort:SetText("Time")
 BrowseCurrentBidSort:SetText("Bid")
+ilvlsort:SetText("iLvl")
+buyoutsort:SetText("Buyout")
+unitsort:SetText("Unit BO")
+qtysort:SetText("#")
+
+local function UpdateArrow(butt)
+	local primaryColumn, reversed = GetAuctionSort("list", 1)
+	if butt.sortcolumn == primaryColumn then
+		local arrow = _G[butt:GetName().."Arrow"]
+		arrow:Show()
+		arrow:SetTexCoord(0, 0.5625, reversed and 1 or 0, reversed and 0 or 1)
+	else _G[butt:GetName().."Arrow"]:Hide() end
+end
+
+function UpdateArrows() UpdateArrow(buyoutsort); UpdateArrow(qtysort) end
 
 
 LibStub("tekKonfig-AboutPanel").new(nil, "tekAuctionBroswer")
