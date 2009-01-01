@@ -122,13 +122,13 @@ for i=1,NUM_ROWS do
 	row.name = name
 
 	local min = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	min:SetWidth(16)
+	min:SetWidth(23)
 	min:SetPoint("LEFT", name, "RIGHT", TEXT_GAP, 0)
 	min:SetJustifyH("RIGHT")
 	row.min = min
 
 	local ilvl = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	ilvl:SetWidth(24)
+	ilvl:SetWidth(33)
 	ilvl:SetPoint("LEFT", min, "RIGHT", TEXT_GAP, 0)
 	ilvl:SetJustifyH("RIGHT")
 	row.ilvl = ilvl
@@ -146,25 +146,25 @@ for i=1,NUM_ROWS do
 	row.timeleft = timeleft
 
 	local bid = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	bid:SetWidth(70)
+	bid:SetWidth(65)
 	bid:SetPoint("LEFT", timeleft, "RIGHT", TEXT_GAP, 0)
 	bid:SetJustifyH("RIGHT")
 	row.bid = bid
 
 	local buyout = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	buyout:SetWidth(70)
+	buyout:SetWidth(65)
 	buyout:SetPoint("LEFT", bid, "RIGHT", TEXT_GAP, 0)
 	buyout:SetJustifyH("RIGHT")
 	row.buyout = buyout
 
 	local unit = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	unit:SetWidth(70)
+	unit:SetWidth(65)
 	unit:SetPoint("LEFT", buyout, "RIGHT", TEXT_GAP, 0)
 	unit:SetJustifyH("RIGHT")
 	row.unit = unit
 
 	local qty = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	qty:SetWidth(16)
+	qty:SetWidth(23)
 	qty:SetPoint("LEFT", unit, "RIGHT", TEXT_GAP, 0)
 	qty:SetJustifyH("RIGHT")
 	row.qty = qty
