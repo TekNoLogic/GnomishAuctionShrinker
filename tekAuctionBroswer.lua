@@ -316,7 +316,7 @@ local sorts = {
 	buyout     = {"duration", "quantity", "name", "level", "quality", "bid", "buyout"},
 	buyout_rev = {     false,       true,  false,    true,     false, false,    false},
 	quantity     = {"duration", "buyoutthenbid", "name", "level", "quality", "quantity"},
-	quantity_rev = {     false,           false,  false,    true,     false,       true},
+	quantity_rev = {     false,           false,  false,    true,     false,      false},
 }
 local function SortAuctions(self)
 	local existingSortColumn, existingSortReverse = GetAuctionSort("list", 1) -- change the sort as appropriate
@@ -335,29 +335,62 @@ local function SortAuctions(self)
 	AuctionFrameBrowse_Search() -- apply the sort
 end
 
-local ilvlsort = CreateFrame("Button", "tekauc_iLvlSort", AuctionFrameBrowse, "AuctionSortButtonTemplate")
-local buyoutsort = CreateFrame("Button", "tekauc_buyoutSort", AuctionFrameBrowse, "AuctionSortButtonTemplate")
-local unitsort = CreateFrame("Button", "tekauc_unitSort", AuctionFrameBrowse, "AuctionSortButtonTemplate")
-local qtysort = CreateFrame("Button", "tekauc_qtySort", AuctionFrameBrowse, "AuctionSortButtonTemplate")
+local function MakeSortButton(text, sortcolumn)
+	local butt = CreateFrame("Button", nil, AuctionFrameBrowse)
+	butt:SetHeight(19)
 
-ilvlsort:SetHeight(19)
-buyoutsort:SetHeight(19)
-unitsort:SetHeight(19)
-qtysort:SetHeight(19)
+	butt:SetNormalFontObject(GameFontHighlightSmall)
+	butt:SetText(text)
 
-tekauc_iLvlSortArrow:Hide()
-tekauc_buyoutSortArrow:Hide()
-tekauc_unitSortArrow:Hide()
-tekauc_qtySortArrow:Hide()
+	local fs = butt:GetFontString()
+	fs:ClearAllPoints()
+	fs:SetPoint("LEFT", butt, "LEFT", 8, 0)
 
-ilvlsort:Disable()
-unitsort:Disable()
+	local left = butt:CreateTexture(nil, "BACKGROUND")
+	left:SetWidth(5) left:SetHeight(19)
+	left:SetPoint("TOPLEFT")
+	left:SetTexture("Interface\\FriendsFrame\\WhoFrame-ColumnTabs")
+	left:SetTexCoord(0, 0.078125, 0, 0.59375)
 
-buyoutsort.sortcolumn = "buyout"
-qtysort.sortcolumn = "quantity"
+	local right = butt:CreateTexture(nil, "BACKGROUND")
+	right:SetWidth(4) right:SetHeight(19)
+	right:SetPoint("TOPRIGHT")
+	right:SetTexture("Interface\\FriendsFrame\\WhoFrame-ColumnTabs")
+	right:SetTexCoord(0.90625, 0.96875, 0, 0.59375)
 
-buyoutsort:SetScript("OnClick", SortAuctions)
-qtysort:SetScript("OnClick", SortAuctions)
+	local middle = butt:CreateTexture(nil, "BACKGROUND")
+	middle:SetHeight(19)
+	middle:SetPoint("LEFT", left, "RIGHT")
+	middle:SetPoint("RIGHT", right, "LEFT")
+	middle:SetTexture("Interface\\FriendsFrame\\WhoFrame-ColumnTabs")
+	middle:SetTexCoord(0.078125, 0.90625, 0, 0.59375)
+
+	butt:SetNormalTexture("Interface\\Buttons\\UI-SortArrow")
+	local normtext = butt:GetNormalTexture()
+	normtext:ClearAllPoints()
+	normtext:SetPoint("LEFT", fs, "RIGHT", 0, -2)
+	normtext:SetWidth(9) normtext:SetHeight(8)
+	normtext:SetTexCoord(0, 0.5625, 0, 1)
+	normtext:Hide()
+	butt.arrow = normtext
+
+	butt:SetHighlightTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-Highlight", "ADD")
+	local highlight = butt:GetHighlightTexture()
+	highlight:ClearAllPoints()
+	highlight:SetPoint("LEFT")
+	highlight:SetPoint("RIGHT")
+	highlight:SetHeight(24)
+
+	butt.sortcolumn = sortcolumn
+	if sortcolumn then butt:SetScript("OnClick", SortAuctions) else butt:Disable() end
+
+	return butt
+end
+
+local ilvlsort = MakeSortButton("iLvl")
+local buyoutsort = MakeSortButton("Buyout", "buyout")
+local unitsort = MakeSortButton("Unit BO")
+local qtysort = MakeSortButton("#", "quantity")
 
 AnchorSort(BrowseQualitySort, row.icon, row.name, -TEXT_GAP - 2)
 AnchorSort(BrowseLevelSort, row.min)
@@ -374,18 +407,19 @@ BrowseCurrentBidSort:SetText("Bid")
 ilvlsort:SetText("iLvl")
 buyoutsort:SetText("Buyout")
 unitsort:SetText("Unit BO")
-qtysort:SetText("#")
 
 local function UpdateArrow(butt)
 	local primaryColumn, reversed = GetAuctionSort("list", 1)
 	if butt.sortcolumn == primaryColumn then
-		local arrow = _G[butt:GetName().."Arrow"]
-		arrow:Show()
-		arrow:SetTexCoord(0, 0.5625, reversed and 1 or 0, reversed and 0 or 1)
-	else _G[butt:GetName().."Arrow"]:Hide() end
+		butt.arrow:Show()
+		butt.arrow:SetTexCoord(0, 0.5625, reversed and 1 or 0, reversed and 0 or 1)
+	else butt.arrow:Hide() end
 end
 
-function UpdateArrows() UpdateArrow(buyoutsort); UpdateArrow(qtysort) end
+function UpdateArrows()
+	UpdateArrow(buyoutsort)
+	UpdateArrow(qtysort)
+end
 
 
 LibStub("tekKonfig-AboutPanel").new(nil, "tekAuctionBroswer")
