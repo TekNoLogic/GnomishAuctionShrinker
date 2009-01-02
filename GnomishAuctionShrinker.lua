@@ -181,6 +181,7 @@ end
 local sorttable, sortbyunit, sortbyilvl = {}, false, false
 local orig, wipe = QueryAuctionItems, wipe
 function QueryAuctionItems(...)
+	if select(10, ...) then sortbyunit, sortbyilvl = false, false end
 	wipe(sorttable)
 	scrollbar:RealSetValue(0)
 	return orig(...)
@@ -388,6 +389,7 @@ function UpdateArrows()
 end
 
 ilvlsort:SetScript("OnClick", function(self)
+	if GetNumAuctionItems("list") > 100 then return end -- Failsafe, don't let sorting be enabled when we have done an all-scan
 	sortbyilvl = sortbyilvl == 1 and -1 or sortbyilvl == false and 1 or false
 	if sortbyilvl then
 		sortbyunit = false
@@ -400,6 +402,7 @@ ilvlsort:SetScript("OnClick", function(self)
 end)
 
 unitsort:SetScript("OnClick", function(self)
+	if GetNumAuctionItems("list") > 100 then return end -- Failsafe, don't let sorting be enabled when we have done an all-scan
 	sortbyunit = not sortbyunit
 	if sortbyunit then
 		sortbyilvl = false
