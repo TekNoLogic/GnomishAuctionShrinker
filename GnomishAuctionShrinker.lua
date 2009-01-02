@@ -216,6 +216,8 @@ function Update(self, event)
 
 	local numBatchAuctions, totalAuctions = GetNumAuctionItems("list")
 
+	if event == "AUCTION_ITEM_LIST_UPDATE" then wipe(sorttable) end
+
 	if (sortbyunit or sortbyilvl) and not next(sorttable) then
 		for i=1,numBatchAuctions do table.insert(sorttable, i) end
 		table.sort(sorttable, sortbyunit and UnitSort or iLvlSort)
