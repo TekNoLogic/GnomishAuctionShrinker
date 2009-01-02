@@ -178,8 +178,34 @@ end
 --      Updater      --
 -----------------------
 
-local orig = QueryAuctionItems
-function QueryAuctionItems(...) scrollbar:RealSetValue(0); return orig(...) end
+local sorttable, sortbyunit, sortbyilvl = {}, false, false
+local orig, wipe = QueryAuctionItems, wipe
+function QueryAuctionItems(...)
+	wipe(sorttable)
+	scrollbar:RealSetValue(0)
+	return orig(...)
+end
+
+local function UnitSort(a,b)
+	local _, _, counta, _, _, _, _, _, buyouta = GetAuctionItemInfo("list", a)
+	local _, _, countb, _, _, _, _, _, buyoutb = GetAuctionItemInfo("list", b)
+	if not buyouta then return false end
+	if not buyoutb then return true end
+	return buyouta/counta < buyoutb/countb
+end
+
+local function iLvlSort(a,b)
+	local linka = GetAuctionItemLink("list", a)
+	if not linka then return false end
+	local _, _, _, iLevela = GetItemInfo(linka)
+
+	local linkb = GetAuctionItemLink("list", b)
+	if not linkb then return true end
+	local _, _, _, iLevelb = GetItemInfo(linkb)
+
+	if sortbyilvl == 1 then return iLevela < iLevelb
+	else return iLevela > iLevelb end
+end
 
 local offset, timeframes = 0, {"<30m", "30m-2h", "2-12hr", ">12hr"}
 function Update(self, event)
@@ -188,8 +214,15 @@ function Update(self, event)
 	bidbutt:Disable()
 	buybutt:Disable()
 
+	local numBatchAuctions, totalAuctions = GetNumAuctionItems("list")
+
+	if (sortbyunit or sortbyilvl) and not next(sorttable) then
+		for i=1,numBatchAuctions do table.insert(sorttable, i) end
+		table.sort(sorttable, sortbyunit and UnitSort or iLvlSort)
+	end
+
 	for i,row in pairs(rows) do
-		local index = offset + i
+		local index = (sortbyunit or sortbyilvl) and sorttable[offset + i] or (offset + i)
 		local name, texture, count, quality, canUse, level, minBid, minIncrement, buyout, bidAmount, highBidder, owner = GetAuctionItemInfo("list", index)
 		local displayedBid = bidAmount == 0 and minBid or bidAmount
 		local requiredBid = bidAmount == 0 and minBid or bidAmount + minIncrement
@@ -248,7 +281,6 @@ function Update(self, event)
 		end
 	end
 
-	local numBatchAuctions, totalAuctions = GetNumAuctionItems("list")
 	local itemsMin = AuctionFrameBrowse.page * NUM_AUCTION_ITEMS_PER_PAGE + 1
 	local itemsMax = itemsMin + numBatchAuctions - 1
 
@@ -349,5 +381,32 @@ function UpdateArrows()
 	UpdateArrow(qtysort)
 end
 
+ilvlsort:SetScript("OnClick", function(self)
+	sortbyilvl = sortbyilvl == 1 and -1 or sortbyilvl == false and 1 or false
+	if sortbyilvl then
+		sortbyunit = false
+		unitsort.arrow:Hide()
+		self.arrow:SetTexCoord(0, 0.5625, sortbyilvl == -1 and 1 or 0, sortbyilvl == -1 and 0 or 1)
+		self.arrow:Show()
+	else self.arrow:Hide() end
+	wipe(sorttable)
+	Update()
+end)
+
+unitsort:SetScript("OnClick", function(self)
+	sortbyunit = not sortbyunit
+	if sortbyunit then
+		sortbyilvl = false
+		ilvlsort.arrow:Hide()
+		self.arrow:Show()
+	else self.arrow:Hide() end
+	wipe(sorttable)
+	Update()
+end)
+
+
+---------------------------
+--      About Panel      --
+---------------------------
 
 LibStub("tekKonfig-AboutPanel").new(nil, "tekAuctionBroswer")

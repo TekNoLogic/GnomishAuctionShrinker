@@ -55,14 +55,14 @@ function tek_MakeSortButton(text, sortcolumn)
 	middle:SetTexture("Interface\\FriendsFrame\\WhoFrame-ColumnTabs")
 	middle:SetTexCoord(0.078125, 0.90625, 0, 0.59375)
 
-	butt:SetNormalTexture("Interface\\Buttons\\UI-SortArrow")
-	local normtext = butt:GetNormalTexture()
-	normtext:ClearAllPoints()
-	normtext:SetPoint("LEFT", fs, "RIGHT", 0, -2)
-	normtext:SetWidth(9) normtext:SetHeight(8)
-	normtext:SetTexCoord(0, 0.5625, 0, 1)
-	normtext:Hide()
-	butt.arrow = normtext
+	local arrow = butt:CreateTexture()
+	arrow:ClearAllPoints()
+	arrow:SetPoint("LEFT", fs, "RIGHT", 0, -2)
+	arrow:SetWidth(9) arrow:SetHeight(8)
+	arrow:SetTexture("Interface\\Buttons\\UI-SortArrow")
+	arrow:SetTexCoord(0, 0.5625, 0, 1)
+	arrow:Hide()
+	butt.arrow = arrow
 
 	butt:SetHighlightTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-Highlight", "ADD")
 	local highlight = butt:GetHighlightTexture()
@@ -72,7 +72,7 @@ function tek_MakeSortButton(text, sortcolumn)
 	highlight:SetHeight(24)
 
 	butt.sortcolumn = sortcolumn
-	if sortcolumn then butt:SetScript("OnClick", SortAuctions) else butt:Disable() end
+	if sortcolumn then butt:SetScript("OnClick", SortAuctions) end
 
 	return butt
 end
