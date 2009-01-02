@@ -409,4 +409,4 @@ end)
 --      About Panel      --
 ---------------------------
 
-LibStub("tekKonfig-AboutPanel").new(nil, "tekAuctionBroswer")
+LibStub("tekKonfig-AboutPanel").new(nil, "GnomishAuctionShrinker")

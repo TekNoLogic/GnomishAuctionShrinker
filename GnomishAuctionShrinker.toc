@@ -1,6 +1,6 @@
 ## Interface: 30000
 
-## Title: tekAuctionBroswer
+## Title: GnomishAuctionShrinker
 ## Notes: Compact AH browser panel
 ## Author: Tekkub Stoutwrithe
 ## Version: Alpha
@@ -15,4 +15,4 @@ LibStub.lua
 tekKonfigAboutPanel.lua
 
 SortButton.lua
-tekAuctionBroswer.lua
+GnomishAuctionShrinker.lua
