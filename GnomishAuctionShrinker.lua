@@ -195,6 +195,9 @@ local function UnitSort(a,b)
 end
 
 local function iLvlSort(a,b)
+	if not a or not b then return false end
+	if not b then return true end
+
 	local linka = GetAuctionItemLink("list", a)
 	if not linka then return false end
 	local _, _, _, iLevela = GetItemInfo(linka)
@@ -203,6 +206,7 @@ local function iLvlSort(a,b)
 	if not linkb then return true end
 	local _, _, _, iLevelb = GetItemInfo(linkb)
 
+	if iLevela == iLevelb then return UnitSort(a,b) end
 	if sortbyilvl == 1 then return iLevela < iLevelb
 	else return iLevela > iLevelb end
 end
