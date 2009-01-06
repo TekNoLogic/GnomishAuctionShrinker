@@ -1,4 +1,5 @@
 
+local BUYOUT_LIMIT = 3000000
 local NUM_ROWS, BOTTOM_GAP = 14, 25
 local ROW_HEIGHT = math.floor((305-BOTTOM_GAP)/NUM_ROWS)
 local TEXT_GAP = 4
@@ -71,7 +72,9 @@ local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetVal
 local function RowOnClick(self)
 	if IsAltKeyDown() then
 		SetSelectedAuctionItem("list", self.index)
-		PlaceAuctionBid("list", self.index, (select(9, GetAuctionItemInfo("list", self.index))))
+		local _, _, _, _, _, _, _, _, buyout = GetAuctionItemInfo("list", self.index)
+		if buyout > BUYOUT_LIMIT then return HandleModifiedItemClick(self.link) end
+		PlaceAuctionBid("list", self.index, buyout)
 		CloseAuctionStaticPopups()
 	elseif IsModifiedClick() then HandleModifiedItemClick(self.link)
 	else
