@@ -72,7 +72,7 @@ local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetVal
 local function RowOnClick(self)
 	if IsAltKeyDown() then
 		SetSelectedAuctionItem("list", self.index)
-		local _, _, _, _, _, _, _, _, buyout = GetAuctionItemInfo("list", self.index)
+		local _, _, _, _, _, _, _, _, _, buyout = GetAuctionItemInfo("list", self.index)
 		if buyout > BUYOUT_LIMIT then return HandleModifiedItemClick(self.link) end
 		PlaceAuctionBid("list", self.index, buyout)
 		CloseAuctionStaticPopups()
@@ -191,8 +191,8 @@ function QueryAuctionItems(...)
 end
 
 local function UnitSort(a,b)
-	local _, _, counta, _, _, _, _, _, buyouta = GetAuctionItemInfo("list", a)
-	local _, _, countb, _, _, _, _, _, buyoutb = GetAuctionItemInfo("list", b)
+	local _, _, counta, _, _, _, _, _, _, buyouta = GetAuctionItemInfo("list", a)
+	local _, _, countb, _, _, _, _, _, _, buyoutb = GetAuctionItemInfo("list", b)
 	if not buyouta then return false end
 	if not buyoutb then return true end
 	return buyouta/counta < buyoutb/countb
@@ -233,7 +233,7 @@ function Update(self, event)
 
 	for i,row in pairs(rows) do
 		local index = (sortbyunit or sortbyilvl) and sorttable[offset + i] or (offset + i)
-		local name, texture, count, quality, canUse, level, minBid, minIncrement, buyout, bidAmount, highBidder, owner = GetAuctionItemInfo("list", index)
+		local name, texture, count, quality, canUse, level, _, minBid, minIncrement, buyout, bidAmount, highBidder, owner = GetAuctionItemInfo("list", index)
 		local displayedBid = bidAmount == 0 and minBid or bidAmount
 		local requiredBid = bidAmount == 0 and minBid or bidAmount + minIncrement
 		if requiredBid >= MAXIMUM_BID_PRICE then buyoutPrice = requiredBid end -- Lie about our buyout price
