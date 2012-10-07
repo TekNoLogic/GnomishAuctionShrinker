@@ -88,13 +88,19 @@ local function IconOnEnter(self)
 	if not self.row.index then return end
 
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-	GameTooltip:SetAuctionItem("list", self.row.index)
+
+	local hasCooldown, speciesID, level, breedQuality, maxHealth, power, speed,
+	      name = GameTooltip:SetAuctionItem("list", self.row.index)
+	if speciesID and speciesID > 0 then
+		BattlePetToolTip_Show(speciesID, level, breedQuality, maxHealth, power,
+			                    speed, name)
+		return
+	end
 
 	GameTooltip_ShowCompareItem()
 
 	if IsModifiedClick("DRESSUP") then ShowInspectCursor() else ResetCursor() end
 end
-local function HideTooltip() GameTooltip:Hide() end
 
 local rows = {}
 for i=1,NUM_ROWS do
@@ -115,7 +121,7 @@ for i=1,NUM_ROWS do
 
 	local icon = CreateFrame("Button", nil, row)
 	icon:SetScript("OnEnter", IconOnEnter)
-	icon:SetScript("OnLeave", HideTooltip)
+	icon:SetScript("OnLeave", GameTooltip_Hide)
 	icon:SetWidth(ROW_HEIGHT-2) icon:SetHeight(ROW_HEIGHT-2)
 	icon:SetPoint("LEFT", row, TEXT_GAP, 0)
 	icon.row = row
@@ -232,17 +238,23 @@ function Update(self, event)
 	end
 
 	for i,row in pairs(rows) do
-		local index = (sortbyunit or sortbyilvl) and sorttable[offset + i] or (offset + i)
-		local name, texture, count, quality, canUse, level, _, minBid, minIncrement, buyout, bidAmount, highBidder, owner = GetAuctionItemInfo("list", index)
+		local index = (sortbyunit or sortbyilvl) and sorttable[offset + i] or
+		              (offset + i)
+		local name, texture, count, quality, canUse, level, levelColHeader, minBid,
+		      minIncrement, buyoutPrice, bidAmount, highBidder, owner, saleStatus,
+		      itemId, hasAllInfo = GetAuctionItemInfo("list", index)
 		local displayedBid = bidAmount == 0 and minBid or bidAmount
 		local requiredBid = bidAmount == 0 and minBid or bidAmount + minIncrement
-		if requiredBid >= MAXIMUM_BID_PRICE then buyoutPrice = requiredBid end -- Lie about our buyout price
+
+		-- Lie about our buyout price
+		if requiredBid >= MAXIMUM_BID_PRICE then buyoutPrice = requiredBid end
 
 		if name then
 			local color = ITEM_QUALITY_COLORS[quality]
 			local link = GetAuctionItemLink("list", index)
-			local _, _, _, iLevel, _, _, _, maxStack = GetItemInfo(link)
 			local duration = GetAuctionItemTimeLeft("list", index)
+			local _, _, _, iLevel, _, _, _, maxStack = GetItemInfo(link)
+			maxStack = maxStack or 1
 
 			row.icon:SetNormalTexture(texture)
 			row.name:SetText(name)
@@ -252,8 +264,8 @@ function Update(self, event)
 			row.owner:SetText(owner)
 			row.timeleft:SetText(timeframes[duration])
 			row.bid:SetText(GSC(displayedBid) or "----")
-			row.buyout:SetText(buyout > 0 and GSC(buyout) or "----")
-			row.unit:SetText(buyout > 0 and maxStack > 1 and GSC(buyout/count) or "----")
+			row.buyout:SetText(buyoutPrice > 0 and GSC(buyoutPrice) or "----")
+			row.unit:SetText(buyoutPrice > 0 and maxStack > 1 and GSC(buyoutPrice/count) or "----")
 			row.qty:SetText(maxStack > 1 and count)
 			row:Enable()
 
@@ -280,10 +292,10 @@ function Update(self, event)
 			MoneyInputFrame_SetCopper(BrowseBidPrice, requiredBid) -- Set bid
 			if not highBidder and owner ~= UnitName("player") and GetMoney() >= MoneyInputFrame_GetCopper(BrowseBidPrice) and MoneyInputFrame_GetCopper(BrowseBidPrice) <= MAXIMUM_BID_PRICE then bidbutt:Enable() end
 
-			if buyout > 0 and buyout >= minBid then
-				if GetMoney() >= buyout or (highBidder and GetMoney()+bidAmount >= buyout) then
+			if buyoutPrice > 0 and buyoutPrice >= minBid then
+				if GetMoney() >= buyoutPrice or (highBidder and GetMoney()+bidAmount >= buyoutPrice) then
 					buybutt:Enable()
-					AuctionFrame.buyoutPrice = buyout
+					AuctionFrame.buyoutPrice = buyoutPrice
 				end
 			end
 		else
