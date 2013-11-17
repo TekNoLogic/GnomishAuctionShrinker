@@ -241,8 +241,8 @@ function Update(self, event)
 		local index = (sortbyunit or sortbyilvl) and sorttable[offset + i] or
 		              (offset + i)
 		local name, texture, count, quality, canUse, level, levelColHeader, minBid,
-		      minIncrement, buyoutPrice, bidAmount, highBidder, owner, saleStatus,
-		      itemId, hasAllInfo = GetAuctionItemInfo("list", index)
+    		  minIncrement, buyoutPrice, bidAmount, highBidder, bidderFullName, owner,
+              ownerFullName, saleStatus, itemId, hasAllInfo = GetAuctionItemInfo("list", index)
 		local displayedBid = bidAmount == 0 and minBid or bidAmount
 		local requiredBid = bidAmount == 0 and minBid or bidAmount + minIncrement
 
