@@ -420,10 +420,3 @@ unitsort:SetScript("OnClick", function(self)
 	wipe(sorttable)
 	Update()
 end)
-
-
----------------------------
---      About Panel      --
----------------------------
-
-LibStub("tekKonfig-AboutPanel").new(nil, "GnomishAuctionShrinker")
