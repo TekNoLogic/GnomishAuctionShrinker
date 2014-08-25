@@ -1,4 +1,6 @@
 
+local myname, ns = ...
+
 local BUYOUT_LIMIT = 3000000
 local NUM_ROWS, BOTTOM_GAP = 14, 25
 local ROW_HEIGHT = math.floor((305-BOTTOM_GAP)/NUM_ROWS)
@@ -7,15 +9,6 @@ local noop = function() end
 
 local MakeSortButton = tek_MakeSortButton
 tek_MakeSortButton = nil
-
-
-local function GSC(cash)
-	if not cash then return end
-	local g, s, c = floor(cash/10000), floor((cash/100)%100), cash%100
-	if g > 0 then return string.format("|cffffd700%d.|cffc7c7cf%02d.|cffeda55f%02d", g, s, c)
-	elseif s > 0 then return string.format("|cffc7c7cf%d.|cffeda55f%02d", s, c)
-	else return string.format("|cffeda55f%d", c) end
-end
 
 
 ---------------------
@@ -263,9 +256,9 @@ function Update(self, event)
 			row.ilvl:SetText(iLevel)
 			row.owner:SetText(owner)
 			row.timeleft:SetText(timeframes[duration])
-			row.bid:SetText(GSC(displayedBid) or "----")
-			row.buyout:SetText(buyoutPrice > 0 and GSC(buyoutPrice) or "----")
-			row.unit:SetText(buyoutPrice > 0 and maxStack > 1 and GSC(buyoutPrice/count) or "----")
+			row.bid:SetText(ns.GSC(displayedBid) or "----")
+			row.buyout:SetText(buyoutPrice > 0 and ns.GSC(buyoutPrice) or "----")
+			row.unit:SetText(buyoutPrice > 0 and maxStack > 1 and ns.GSC(buyoutPrice/count) or "----")
 			row.qty:SetText(maxStack > 1 and count)
 			row:Enable()
 
