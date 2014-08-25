@@ -1,4 +1,6 @@
 
+local myname, ns = ...
+
 local sorts = {
 	buyout     = {"duration", "quantity", "name", "level", "quality", "bid", "buyout"},
 	buyout_rev = {     false,       true,  false,    true,     false, false,    false},
@@ -25,7 +27,7 @@ local function SortAuctions(self)
 end
 
 
-function tek_MakeSortButton(text, sortcolumn)
+function ns.MakeSortButton(text, sortcolumn)
 	local butt = CreateFrame("Button", nil, AuctionFrameBrowse)
 	butt:SetHeight(19)
 

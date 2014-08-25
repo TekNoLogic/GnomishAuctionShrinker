@@ -7,9 +7,6 @@ local ROW_HEIGHT = math.floor((305-BOTTOM_GAP)/NUM_ROWS)
 local TEXT_GAP = 4
 local noop = function() end
 
-local MakeSortButton = tek_MakeSortButton
-tek_MakeSortButton = nil
-
 
 ---------------------
 --      Panel      --
@@ -362,10 +359,11 @@ local function AnchorSort(butt, left, right, loffset)
 	butt.SetWidth = noop
 end
 
-local ilvlsort = MakeSortButton("iLvl")
-local buyoutsort = MakeSortButton("Buyout", "buyout")
-local unitsort = MakeSortButton("Unit BO")
-local qtysort = MakeSortButton("#", "quantity")
+local ilvlsort = ns.MakeSortButton("iLvl")
+local buyoutsort = ns.MakeSortButton("Buyout", "buyout")
+local unitsort = ns.MakeSortButton("Unit BO")
+local qtysort = ns.MakeSortButton("#", "quantity")
+ns.MakeSortButton = nil
 
 AnchorSort(BrowseQualitySort, row.icon, row.name, -TEXT_GAP - 2)
 AnchorSort(BrowseLevelSort, row.min)
