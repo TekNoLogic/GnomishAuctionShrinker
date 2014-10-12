@@ -102,7 +102,7 @@ for i=1,NUM_ROWS do
 	else row:SetPoint("TOP", rows[i-1], "BOTTOM") end
 	row:SetScript("OnClick", RowOnClick)
 	row:SetScript("OnMouseWheel", OnMouseWheel)
-	row:EnableMouseWheel()
+	row:EnableMouseWheel(true)
 	row:Disable()
 	rows[i] = row
 
@@ -332,7 +332,7 @@ panel:SetScript("OnShow", Update)
 -------------------------
 
 panel:SetScript("OnMouseWheel", OnMouseWheel)
-panel:EnableMouseWheel()
+panel:EnableMouseWheel(true)
 scrollbar:SetScript("OnValueChanged", function(self, value, ...)
 	offset = value
 	local min, max = self:GetMinMaxValues()
