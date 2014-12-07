@@ -227,7 +227,7 @@ function Update(self, event)
 		table.sort(sorttable, sortbyunit and UnitSort or iLvlSort)
 	end
 
-	for i,row in pairs(rows) do
+	for i,row in ipairs(rows) do
 		local index = (sortbyunit or sortbyilvl) and sorttable[offset + i] or
 		              (offset + i)
 		local name, texture, count, quality, canUse, level, levelColHeader, minBid,
