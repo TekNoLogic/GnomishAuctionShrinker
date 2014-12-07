@@ -38,7 +38,7 @@ nextbutt:ClearAllPoints()
 nextbutt:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", 0, 0)
 nextbutt:Show()
 nextbutt.RealShow, nextbutt.RealHide, nextbutt.RealEnable, nextbutt.RealDisable = nextbutt.Show, nextbutt.Hide, nextbutt.Enable, nextbutt.Disable
-nextbutt.Show, nextbutt.Hide, nextbutt.Enable, nextbutt.Disable = noop, noop, noop, noop
+nextbutt.Show, nextbutt.Hide = noop, noop
 nextbutt:GetRegions():Hide()
 
 prevbutt:SetParent(panel)
@@ -47,7 +47,7 @@ prevbutt:ClearAllPoints()
 prevbutt:SetPoint("RIGHT", nextbutt, "LEFT")
 prevbutt:Show()
 prevbutt.RealShow, prevbutt.RealHide, prevbutt.RealEnable, prevbutt.RealDisable = prevbutt.Show, prevbutt.Hide, prevbutt.Enable, prevbutt.Disable
-prevbutt.Show, prevbutt.Hide, prevbutt.Enable, prevbutt.Disable = noop, noop, noop, noop
+prevbutt.Show, prevbutt.Hide = noop, noop
 prevbutt:GetRegions():Hide()
 
 counttext:SetParent(panel)
