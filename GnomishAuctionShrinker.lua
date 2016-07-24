@@ -239,11 +239,11 @@ function Update(self, event)
 		-- Lie about our buyout price
 		if requiredBid >= MAXIMUM_BID_PRICE then buyoutPrice = requiredBid end
 
-		if name then
+		if name and itemId then
 			local color = ITEM_QUALITY_COLORS[quality]
 			local link = GetAuctionItemLink("list", index)
 			local duration = GetAuctionItemTimeLeft("list", index)
-			local _, _, _, iLevel, _, _, _, maxStack = GetItemInfo(link)
+			local _, _, _, iLevel, _, _, _, maxStack = GetItemInfo(itemId)
 			maxStack = maxStack or 1
 
 			row.icon:SetNormalTexture(texture)
