@@ -240,7 +240,7 @@ function Update(self, event)
 		if requiredBid >= MAXIMUM_BID_PRICE then buyoutPrice = requiredBid end
 
 		if name and itemId then
-			local color = ITEM_QUALITY_COLORS[quality]
+			local color = ITEM_QUALITY_COLORS[quality] or ITEM_QUALITY_COLORS[1]
 			local link = GetAuctionItemLink("list", index)
 			local duration = GetAuctionItemTimeLeft("list", index)
 			local _, _, _, iLevel, _, _, _, maxStack = GetItemInfo(itemId)
