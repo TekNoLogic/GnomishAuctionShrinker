@@ -63,7 +63,15 @@ local function RowOnClick(self)
 	if IsAltKeyDown() then
 		SetSelectedAuctionItem("list", self.index)
 		local _, _, _, _, _, _, _, _, _, buyout = GetAuctionItemInfo("list", self.index)
-		if buyout > BUYOUT_LIMIT then return HandleModifiedItemClick(self.link) end
+
+		if buyout > BUYOUT_LIMIT then
+			SetSelectedAuctionItem("list", self.index)
+			AuctionFrame.buyoutPrice = buyout
+			StaticPopup_Show("BUYOUT_AUCTION")
+			BrowseBuyoutButton:Disable()
+			return
+		end
+
 		PlaceAuctionBid("list", self.index, buyout)
 		CloseAuctionStaticPopups()
 	elseif IsModifiedClick() then HandleModifiedItemClick(self.link)
