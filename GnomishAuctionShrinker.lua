@@ -25,6 +25,10 @@ for i=1,8 do
 end
 
 
+-- Disable updates on default panel
+AuctionFrameBrowse:UnregisterEvent("AUCTION_ITEM_LIST_UPDATE")
+
+
 local bidbutt, buybutt = BrowseBidButton, BrowseBuyoutButton
 
 local scrollbar, upbutt, downbutt = BrowseScrollFrameScrollBar, BrowseScrollFrameScrollBarScrollUpButton, BrowseScrollFrameScrollBarScrollDownButton
@@ -228,7 +232,13 @@ function Update(self, event)
 
 	local numBatchAuctions, totalAuctions = GetNumAuctionItems("list")
 
-	if event == "AUCTION_ITEM_LIST_UPDATE" then wipe(sorttable) end
+	if event == "AUCTION_ITEM_LIST_UPDATE" then
+		wipe(sorttable)
+		AuctionFrameBrowse.isSearching = nil
+		BrowseNoResultsText:SetText(BROWSE_NO_RESULTS)
+	end
+
+	BrowseNoResultsText:SetShown(numBatchAuctions == 0)
 
 	if (sortbyunit or sortbyilvl) and not next(sorttable) then
 		for i=1,numBatchAuctions do table.insert(sorttable, i) end
@@ -311,8 +321,17 @@ function Update(self, event)
 	else
 		BrowseSearchCountText:SetFormattedText(NUMBER_OF_RESULTS_TEMPLATE, itemsMin, itemsMax, totalAuctions)
 		BrowseSearchCountText:Show()
+
 		prevbutt:RealShow()
 		nextbutt:RealShow()
+		if totalAuctions > NUM_AUCTION_ITEMS_PER_PAGE then
+			prevbutt.isEnabled = AuctionFrameBrowse.page ~= 0
+			nextbutt.isEnabled = AuctionFrameBrowse.page ~= (ceil(totalAuctions/NUM_AUCTION_ITEMS_PER_PAGE) - 1)
+		else
+			prevbutt.isEnabled = false
+			nextbutt.isEnabled = false
+		end
+
 		if numBatchAuctions-NUM_ROWS <= 0 then
 			scrollbar:Disable()
 			upbutt:Disable()
