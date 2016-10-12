@@ -12,6 +12,7 @@
 ## LoadOnDemand: 1
 ## LoadWith: Blizzard_AuctionUI
 
+externals\item_colors.lua
 externals\gsc.lua
 externals\ui-about.lua
 

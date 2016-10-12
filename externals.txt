@@ -1,2 +1,3 @@
 gsc.lua
+item_colors.lua
 ui-about.lua
