@@ -185,7 +185,7 @@ end
 --      Updater      --
 -----------------------
 
-local sorttable, sortbyunit, sortbyilvl = {}, false, false
+local sorttable, sortbyunit, sortbyilvl = {}, true, false
 local orig, wipe = QueryAuctionItems, wipe
 function QueryAuctionItems(...)
 	if select(10, ...) then sortbyunit, sortbyilvl = false, false end
@@ -426,3 +426,4 @@ unitsort:SetScript("OnClick", function(self)
 	wipe(sorttable)
 	Update()
 end)
+unitsort.arrow:Show()
