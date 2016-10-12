@@ -106,82 +106,13 @@ end
 
 local rows = {}
 for i=1,NUM_ROWS do
-	local row = CreateFrame("Button", nil, panel)
+	local row = ns.CreateAuctionRow(panel)
 	row:SetHeight(ROW_HEIGHT)
 	row:SetPoint("LEFT")
 	row:SetPoint("RIGHT")
 	if i == 1 then row:SetPoint("TOP")
 	else row:SetPoint("TOP", rows[i-1], "BOTTOM") end
-	row:SetScript("OnClick", RowOnClick)
-	row:SetScript("OnMouseWheel", OnMouseWheel)
-	row:EnableMouseWheel(true)
-	row:Disable()
 	rows[i] = row
-
-	row:SetHighlightTexture("Interface\\HelpFrame\\HelpFrameButton-Highlight")
-	row:GetHighlightTexture():SetTexCoord(0, 1, 0, 0.578125)
-
-	local icon = CreateFrame("Button", nil, row)
-	icon:SetScript("OnEnter", IconOnEnter)
-	icon:SetScript("OnLeave", GameTooltip_Hide)
-	icon:SetWidth(ROW_HEIGHT-2) icon:SetHeight(ROW_HEIGHT-2)
-	icon:SetPoint("LEFT", row, TEXT_GAP, 0)
-	icon.row = row
-	row.icon = icon
-
-	local name = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	name:SetWidth(155) name:SetHeight(ROW_HEIGHT)
-	name:SetPoint("LEFT", icon, "RIGHT", TEXT_GAP, 0)
-	name:SetJustifyH("LEFT")
-	row.name = name
-
-	local min = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	min:SetWidth(23)
-	min:SetPoint("LEFT", name, "RIGHT", TEXT_GAP, 0)
-	min:SetJustifyH("RIGHT")
-	row.min = min
-
-	local ilvl = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	ilvl:SetWidth(33)
-	ilvl:SetPoint("LEFT", min, "RIGHT", TEXT_GAP, 0)
-	ilvl:SetJustifyH("RIGHT")
-	row.ilvl = ilvl
-
-	local owner = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	owner:SetWidth(75) owner:SetHeight(ROW_HEIGHT)
-	owner:SetPoint("LEFT", ilvl, "RIGHT", TEXT_GAP, 0)
-	owner:SetJustifyH("RIGHT")
-	row.owner = owner
-
-	local timeleft = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	timeleft:SetWidth(45)
-	timeleft:SetPoint("LEFT", owner, "RIGHT", TEXT_GAP, 0)
-	timeleft:SetJustifyH("RIGHT")
-	row.timeleft = timeleft
-
-	local bid = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	bid:SetWidth(65)
-	bid:SetPoint("LEFT", timeleft, "RIGHT", TEXT_GAP, 0)
-	bid:SetJustifyH("RIGHT")
-	row.bid = bid
-
-	local buyout = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	buyout:SetWidth(65)
-	buyout:SetPoint("LEFT", bid, "RIGHT", TEXT_GAP, 0)
-	buyout:SetJustifyH("RIGHT")
-	row.buyout = buyout
-
-	local unit = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	unit:SetWidth(65)
-	unit:SetPoint("LEFT", buyout, "RIGHT", TEXT_GAP, 0)
-	unit:SetJustifyH("RIGHT")
-	row.unit = unit
-
-	local qty = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	qty:SetWidth(23)
-	qty:SetPoint("LEFT", unit, "RIGHT", TEXT_GAP, 0)
-	qty:SetJustifyH("RIGHT")
-	row.qty = qty
 end
 
 
@@ -223,7 +154,7 @@ local function iLvlSort(a,b)
 	else return iLevela > iLevelb end
 end
 
-local offset, timeframes = 0, {"<30m", "30m-2h", "2-12hr", ">12hr"}
+local offset = 0
 function Update(self, event)
 	local selected = GetSelectedAuctionItem("list")
 	AuctionFrame.buyoutPrice = nil
@@ -248,67 +179,7 @@ function Update(self, event)
 	for i,row in ipairs(rows) do
 		local index = (sortbyunit or sortbyilvl) and sorttable[offset + i] or
 		              (offset + i)
-		local name, texture, count, quality, canUse, level, levelColHeader, minBid,
-    		  minIncrement, buyoutPrice, bidAmount, highBidder, bidderFullName, owner,
-              ownerFullName, saleStatus, itemId, hasAllInfo = GetAuctionItemInfo("list", index)
-		local displayedBid = bidAmount == 0 and minBid or bidAmount
-		local requiredBid = bidAmount == 0 and minBid or bidAmount + minIncrement
-
-		-- Lie about our buyout price
-		if requiredBid >= MAXIMUM_BID_PRICE then buyoutPrice = requiredBid end
-
-		if name and itemId then
-			local color = ITEM_QUALITY_COLORS[quality] or ITEM_QUALITY_COLORS[1]
-			local link = GetAuctionItemLink("list", index)
-			local duration = GetAuctionItemTimeLeft("list", index)
-			local _, _, _, iLevel, _, _, _, maxStack = GetItemInfo(itemId)
-			maxStack = maxStack or 1
-
-			row.icon:SetNormalTexture(texture)
-			row.name:SetText(name)
-			row.name:SetVertexColor(color.r, color.g, color.b)
-			row.min:SetText(level ~= 1 and level)
-			row.ilvl:SetText(iLevel)
-			row.owner:SetText(owner)
-			row.timeleft:SetText(timeframes[duration])
-			row.bid:SetText(ns.GS(displayedBid) or "----")
-			row.buyout:SetText(buyoutPrice > 0 and ns.GS(buyoutPrice) or "----")
-			row.unit:SetText(buyoutPrice > 0 and maxStack > 1 and ns.GS(buyoutPrice/count) or "----")
-			row.qty:SetText(maxStack > 1 and count)
-			row:Enable()
-
-			row.index, row.link = index, link
-		else
-			row.icon:SetNormalTexture(nil)
-			row.name:SetText()
-			row.min:SetText()
-			row.ilvl:SetText()
-			row.owner:SetText()
-			row.timeleft:SetText()
-			row.bid:SetText()
-			row.buyout:SetText()
-			row.unit:SetText()
-			row.qty:SetText()
-			row:Disable()
-
-			row.index, row.link = nil
-		end
-
-		if selected and index == selected then
-			row:LockHighlight()
-
-			MoneyInputFrame_SetCopper(BrowseBidPrice, requiredBid) -- Set bid
-			if not highBidder and owner ~= UnitName("player") and GetMoney() >= MoneyInputFrame_GetCopper(BrowseBidPrice) and MoneyInputFrame_GetCopper(BrowseBidPrice) <= MAXIMUM_BID_PRICE then bidbutt:Enable() end
-
-			if buyoutPrice > 0 and buyoutPrice >= minBid then
-				if GetMoney() >= buyoutPrice or (highBidder and GetMoney()+bidAmount >= buyoutPrice) then
-					buybutt:Enable()
-					AuctionFrame.buyoutPrice = buyoutPrice
-				end
-			end
-		else
-			row:UnlockHighlight()
-		end
+		row:SetValue(index)
 	end
 
 	local itemsMin = AuctionFrameBrowse.page * NUM_AUCTION_ITEMS_PER_PAGE + 1
