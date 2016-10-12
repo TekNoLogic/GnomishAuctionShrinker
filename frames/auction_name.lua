@@ -13,7 +13,7 @@ local function SetValue(self, index)
 end
 
 
-function ns.CreateItemName(parent)
+function ns.CreateAuctionName(parent)
 	local name = parent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	name.SetValue = SetValue
 	return name

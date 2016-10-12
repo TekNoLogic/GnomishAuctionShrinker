@@ -16,11 +16,11 @@ externals\item_colors.lua
 externals\gsc.lua
 externals\ui-about.lua
 
-frames\item_icon.lua
-frames\item_ilevel.lua
-frames\item_name.lua
-frames\item_time_left.lua
-frames\row.lua
+frames\auction_icon.lua
+frames\auction_ilevel.lua
+frames\auction_name.lua
+frames\auction_row.lua
+frames\auction_time_left.lua
 
 SortButton.lua
 GnomishAuctionShrinker.lua

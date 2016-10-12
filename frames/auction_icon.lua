@@ -40,7 +40,7 @@ local function SetValue(self, index)
 end
 
 
-function ns.CreateItemIcon(parent)
+function ns.CreateAuctionIcon(parent)
 	local icon = CreateFrame("Button", nil, parent)
 	icon:SetScript("OnEnter", OnEnter)
 	icon:SetScript("OnLeave", GameTooltip_Hide)

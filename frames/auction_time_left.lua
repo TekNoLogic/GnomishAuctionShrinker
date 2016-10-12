@@ -11,7 +11,7 @@ local function SetValue(self, index)
 end
 
 
-function ns.CreateItemTimeLeft(parent)
+function ns.CreateAuctionTimeLeft(parent)
 	local time = parent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	time.SetValue = SetValue
 	return time

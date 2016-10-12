@@ -13,7 +13,7 @@ local function SetValue(self, index)
 end
 
 
-function ns.CreateItemIlevel(parent)
+function ns.CreateAuctionIlevel(parent)
 	local ilvl = parent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	ilvl.SetValue = SetValue
 	return ilvl

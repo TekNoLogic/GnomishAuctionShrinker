@@ -134,13 +134,13 @@ function ns.CreateAuctionRow(parent)
 	local kids = {}
 	children[row] = kids
 
-	local icon = ns.CreateItemIcon(row)
+	local icon = ns.CreateAuctionIcon(row)
 	icon:SetSize(ROW_HEIGHT-2, ROW_HEIGHT-2)
 	icon:SetPoint("LEFT", row, TEXT_GAP, 0)
 	row.icon = icon
 	kids[icon] = true
 
-	local name = ns.CreateItemName(row)
+	local name = ns.CreateAuctionName(row)
 	name:SetSize(155, ROW_HEIGHT)
 	name:SetPoint("LEFT", icon, "RIGHT", TEXT_GAP, 0)
 	name:SetJustifyH("LEFT")
@@ -153,7 +153,7 @@ function ns.CreateAuctionRow(parent)
 	min:SetJustifyH("RIGHT")
 	row.min = min
 
-	local ilvl = ns.CreateItemIlevel(row)
+	local ilvl = ns.CreateAuctionIlevel(row)
 	ilvl:SetWidth(33)
 	ilvl:SetPoint("LEFT", min, "RIGHT", TEXT_GAP, 0)
 	ilvl:SetJustifyH("RIGHT")
@@ -166,7 +166,7 @@ function ns.CreateAuctionRow(parent)
 	owner:SetJustifyH("RIGHT")
 	row.owner = owner
 
-	local timeleft = ns.CreateItemTimeLeft(row)
+	local timeleft = ns.CreateAuctionTimeLeft(row)
 	timeleft:SetWidth(45)
 	timeleft:SetPoint("LEFT", owner, "RIGHT", TEXT_GAP, 0)
 	timeleft:SetJustifyH("RIGHT")
