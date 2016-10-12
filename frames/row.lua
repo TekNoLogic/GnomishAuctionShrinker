@@ -42,7 +42,6 @@ local children = {}
 local function OnDisable(self)
 	for frame in pairs(children[self]) do frame:SetValue() end
 	self.min:SetText()
-	self.ilvl:SetText()
 	self.owner:SetText()
 	self.bid:SetText()
 	self.buyout:SetText()
@@ -100,14 +99,13 @@ local function SetValue(self, index)
 
 	local color = ITEM_QUALITY_COLORS[quality] or ITEM_QUALITY_COLORS[1]
 	local link = GetAuctionItemLink("list", index)
-	local _, _, _, iLevel, _, _, _, maxStack = GetItemInfo(itemId)
+	local _, _, _, _, _, _, _, maxStack = GetItemInfo(itemId)
 	maxStack = maxStack or 1
 
 	self.link = link
 	self.required_bid = required_bid
 
 	self.min:SetText(level ~= 1 and level)
-	self.ilvl:SetText(iLevel)
 	self.owner:SetText(owner)
 	self.bid:SetText(ns.GS(displayedBid) or "----")
 	self.buyout:SetText(buyoutPrice > 0 and ns.GS(buyoutPrice) or "----")
@@ -155,11 +153,12 @@ function ns.CreateAuctionRow(parent)
 	min:SetJustifyH("RIGHT")
 	row.min = min
 
-	local ilvl = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+	local ilvl = ns.CreateItemIlevel(row)
 	ilvl:SetWidth(33)
 	ilvl:SetPoint("LEFT", min, "RIGHT", TEXT_GAP, 0)
 	ilvl:SetJustifyH("RIGHT")
 	row.ilvl = ilvl
+	kids[ilvl] = true
 
 	local owner = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	owner:SetWidth(75) owner:SetHeight(ROW_HEIGHT)
