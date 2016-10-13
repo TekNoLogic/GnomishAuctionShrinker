@@ -43,7 +43,6 @@ local function OnDisable(self)
 	for frame in pairs(children[self]) do frame:SetValue() end
 	self.min:SetText()
 	self.owner:SetText()
-	self.bid:SetText()
 	self.buyout:SetText()
 	self.unit:SetText()
 	self.qty:SetText()
@@ -107,7 +106,6 @@ local function SetValue(self, index)
 
 	self.min:SetText(level ~= 1 and level)
 	self.owner:SetText(owner)
-	self.bid:SetText(ns.GS(displayedBid) or "----")
 	self.buyout:SetText(buyoutPrice > 0 and ns.GS(buyoutPrice) or "----")
 	self.unit:SetText(buyoutPrice > 0 and maxStack > 1 and ns.GS(buyoutPrice/count) or "----")
 	self.qty:SetText(maxStack > 1 and count)
@@ -173,11 +171,12 @@ function ns.CreateAuctionRow(parent)
 	row.timeleft = timeleft
 	kids[timeleft] = true
 
-	local bid = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+	local bid = ns.CreateAuctionBid(row)
 	bid:SetWidth(65)
 	bid:SetPoint("LEFT", timeleft, "RIGHT", TEXT_GAP, 0)
 	bid:SetJustifyH("RIGHT")
 	row.bid = bid
+	kids[bid] = true
 
 	local buyout = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	buyout:SetWidth(65)
