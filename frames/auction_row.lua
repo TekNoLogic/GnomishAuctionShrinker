@@ -57,7 +57,8 @@ local function RefreshSelected(self)
 
 	self:LockHighlight()
 
-	MoneyInputFrame_SetCopper(BrowseBidPrice, self.required_bid) -- Set bid
+	-- Set bid
+	MoneyInputFrame_SetCopper(BrowseBidPrice, ns.GetRequiredBid(self.index))
 	if not highBidder and owner ~= UnitName("player") and GetMoney() >= MoneyInputFrame_GetCopper(BrowseBidPrice) and MoneyInputFrame_GetCopper(BrowseBidPrice) <= MAXIMUM_BID_PRICE then bidbutt:Enable() end
 
 	if buyoutPrice > 0 and buyoutPrice >= minBid then
