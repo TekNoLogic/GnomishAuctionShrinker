@@ -80,14 +80,14 @@ end
 local function SetValue(self, index)
 	self.index = index
 
-	for frame in pairs(children[self]) do frame:SetValue(index) end
-	RefreshSelected(self)
-
 	local name, _, count, _, _, level, _, _, _, _, _, _, _, owner =
 		GetAuctionItemInfo("list", index)
 	local item_id = ns.GetAuctionItemID(index)
 
 	if not (name and item_id) then return self:Disable() end
+
+	for frame in pairs(children[self]) do frame:SetValue(index) end
+	RefreshSelected(self)
 
 	local _, _, _, _, _, _, _, stack = GetItemInfo(item_id)
 	stack = stack or 1
