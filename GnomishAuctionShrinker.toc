@@ -16,6 +16,7 @@ externals\item_colors.lua
 externals\gsc.lua
 externals\ui-about.lua
 
+services\get_buyout.lua
 services\get_required_bid.lua
 
 frames\auction_bid.lua
@@ -25,6 +26,7 @@ frames\auction_ilevel.lua
 frames\auction_name.lua
 frames\auction_row.lua
 frames\auction_time_left.lua
+frames\auction_unit_buyout.lua
 
 SortButton.lua
 GnomishAuctionShrinker.lua
