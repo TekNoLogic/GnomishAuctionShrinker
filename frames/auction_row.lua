@@ -82,30 +82,20 @@ local function SetValue(self, index)
 	for frame in pairs(children[self]) do frame:SetValue(index) end
 	RefreshSelected(self)
 
-	local name, texture, count, quality, canUse, level, levelColHeader, minBid,
-				minIncrement, buyoutPrice, bidAmount, highBidder, bidderFullName, owner,
-				ownerFullName, saleStatus, itemId, hasAllInfo = GetAuctionItemInfo("list", index)
-	local displayedBid = bidAmount == 0 and minBid or bidAmount
-	if displayedBid == buyoutPrice then displayedBid = nil end
-	local required_bid = bidAmount == 0 and minBid or bidAmount + minIncrement
+	local name, _, count, _, _, level, _, _, _, _, _, _, _, owner, _, _, item_id =
+		GetAuctionItemInfo("list", index)
 
-	-- Lie about our buyout price
-	if required_bid >= MAXIMUM_BID_PRICE then buyoutPrice = required_bid end
+	if not (name and item_id) then return self:Disable() end
 
-
-	if not (name and itemId) then return self:Disable() end
-
-	local color = ITEM_QUALITY_COLORS[quality] or ITEM_QUALITY_COLORS[1]
 	local link = GetAuctionItemLink("list", index)
-	local _, _, _, _, _, _, _, maxStack = GetItemInfo(itemId)
-	maxStack = maxStack or 1
+	local _, _, _, _, _, _, _, stack = GetItemInfo(item_id)
+	stack = stack or 1
 
 	self.link = link
-	self.required_bid = required_bid
 
 	self.min:SetText(level ~= 1 and level)
 	self.owner:SetText(owner)
-	self.qty:SetText(maxStack > 1 and count)
+	self.qty:SetText(stack > 1 and count)
 	self:Enable()
 end
 
