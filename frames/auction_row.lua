@@ -88,10 +88,10 @@ local function RefreshSelected(self)
 	MoneyInputFrame_SetCopper(BrowseBidPrice, ns.GetRequiredBid(self.index))
 	if CanBid(self.index) then bidbutt:Enable() end
 
-	local buyout = ns.GetBuyout(self.index)
 	if CanBuyout(self.index) then
-		buybutt:Enable()
+		local buyout = ns.GetBuyout(self.index)
 		AuctionFrame.buyoutPrice = buyout
+		buybutt:Enable()
 	end
 end
 
@@ -106,15 +106,15 @@ end
 local function SetValue(self, index)
 	self.index = index
 
-	local name, _, count = GetAuctionItemInfo("list", index)
+	local name = GetAuctionItemInfo("list", index)
 	local item_id = ns.GetAuctionItemID(index)
 
 	if not (name and item_id) then return self:Disable() end
 
+	self:Enable()
+
 	for frame in pairs(children[self]) do frame:SetValue(index) end
 	RefreshSelected(self)
-
-	self:Enable()
 end
 
 
