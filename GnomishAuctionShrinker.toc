@@ -16,7 +16,10 @@ externals\item_colors.lua
 externals\gsc.lua
 externals\ui-about.lua
 
+services\get_required_bid.lua
+
 frames\auction_bid.lua
+frames\auction_buyout.lua
 frames\auction_icon.lua
 frames\auction_ilevel.lua
 frames\auction_name.lua
