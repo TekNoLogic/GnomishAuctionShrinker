@@ -82,8 +82,9 @@ local function SetValue(self, index)
 	for frame in pairs(children[self]) do frame:SetValue(index) end
 	RefreshSelected(self)
 
-	local name, _, count, _, _, level, _, _, _, _, _, _, _, owner, _, _, item_id =
+	local name, _, count, _, _, level, _, _, _, _, _, _, _, owner =
 		GetAuctionItemInfo("list", index)
+	local item_id = ns.GetAuctionItemID(index)
 
 	if not (name and item_id) then return self:Disable() end
 

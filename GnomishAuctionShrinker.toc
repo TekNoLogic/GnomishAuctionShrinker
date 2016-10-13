@@ -16,6 +16,7 @@ externals\item_colors.lua
 externals\gsc.lua
 externals\ui-about.lua
 
+services\get_auction_item_id.lua
 services\get_buyout.lua
 services\get_required_bid.lua
 
