@@ -43,7 +43,6 @@ end
 local children = {}
 local function OnDisable(self)
 	for frame in pairs(children[self]) do frame:SetValue() end
-	self.qty:SetText()
 	self.index = nil
 end
 
@@ -115,10 +114,6 @@ local function SetValue(self, index)
 	for frame in pairs(children[self]) do frame:SetValue(index) end
 	RefreshSelected(self)
 
-	local _, _, _, _, _, _, _, stack = GetItemInfo(item_id)
-	stack = stack or 1
-
-	self.qty:SetText(stack > 1 and count)
 	self:Enable()
 end
 
@@ -204,11 +199,12 @@ function ns.CreateAuctionRow(parent)
 	row.unit = unit
 	kids[unit] = true
 
-	local qty = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+	local qty = ns.CreateAuctionQty(row)
 	qty:SetWidth(23)
 	qty:SetPoint("LEFT", unit, "RIGHT", TEXT_GAP, 0)
 	qty:SetJustifyH("RIGHT")
 	row.qty = qty
+	kids[qty] = true
 
 	return row
 end

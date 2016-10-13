@@ -25,6 +25,7 @@ frames\auction_buyout.lua
 frames\auction_icon.lua
 frames\auction_ilevel.lua
 frames\auction_name.lua
+frames\auction_qty.lua
 frames\auction_required_level.lua
 frames\auction_row.lua
 frames\auction_seller.lua
