@@ -105,6 +105,7 @@ end
 
 local function SetValue(self, index)
 	self.index = index
+	if not index then return self:Disable() end
 
 	local name = GetAuctionItemInfo("list", index)
 	local item_id = ns.GetAuctionItemID(index)
@@ -120,11 +121,13 @@ end
 
 function ns.CreateAuctionRow(parent)
 	local row = CreateFrame("Button", nil, parent)
+	row:Disable()
+
 	row:SetHeight(ROW_HEIGHT)
 	row:SetScript("OnClick", OnClick)
+	row:SetScript("OnDisable", OnDisable)
 	row:SetScript("OnMouseWheel", OnMouseWheel)
 	row:EnableMouseWheel(true)
-	row:Disable()
 
 	row.SetSelected = SetSelected
 	row.SetValue = SetValue
