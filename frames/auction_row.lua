@@ -29,9 +29,11 @@ local function OnClick(self)
 		PlaceAuctionBid("list", self.index, buyout)
 		CloseAuctionStaticPopups()
 	elseif IsModifiedClick() then
-		HandleModifiedItemClick(self.link)
+		HandleModifiedItemClick(GetAuctionItemLink("list", self.index))
 	else
-		if GetCVarBool("auctionDisplayOnCharacter") then DressUpItemLink(self.link) end
+		if GetCVarBool("auctionDisplayOnCharacter") then
+			DressUpItemLink(GetAuctionItemLink("list", self.index))
+		end
 		self:SetSelected()
 		CloseAuctionStaticPopups() -- Close any auction related popups
 	end
@@ -45,7 +47,6 @@ local function OnDisable(self)
 	self.owner:SetText()
 	self.qty:SetText()
 	self.index = nil
-	self.link = nil
 end
 
 
@@ -88,11 +89,8 @@ local function SetValue(self, index)
 
 	if not (name and item_id) then return self:Disable() end
 
-	local link = GetAuctionItemLink("list", index)
 	local _, _, _, _, _, _, _, stack = GetItemInfo(item_id)
 	stack = stack or 1
-
-	self.link = link
 
 	self.min:SetText(level ~= 1 and level)
 	self.owner:SetText(owner)
