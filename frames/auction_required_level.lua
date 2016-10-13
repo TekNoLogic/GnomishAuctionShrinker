@@ -11,7 +11,7 @@ end
 
 
 function ns.CreateAuctionReqLevel(parent)
-	local seller = parent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	seller.SetValue = SetValue
-	return seller
+	local req = parent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+	req.SetValue = SetValue
+	return req
 end
