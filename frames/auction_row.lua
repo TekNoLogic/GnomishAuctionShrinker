@@ -44,7 +44,6 @@ local children = {}
 local function OnDisable(self)
 	for frame in pairs(children[self]) do frame:SetValue() end
 	self.min:SetText()
-	self.owner:SetText()
 	self.qty:SetText()
 	self.index = nil
 end
@@ -80,8 +79,7 @@ end
 local function SetValue(self, index)
 	self.index = index
 
-	local name, _, count, _, _, level, _, _, _, _, _, _, _, owner =
-		GetAuctionItemInfo("list", index)
+	local name, _, count, _, _, level = GetAuctionItemInfo("list", index)
 	local item_id = ns.GetAuctionItemID(index)
 
 	if not (name and item_id) then return self:Disable() end
@@ -93,7 +91,6 @@ local function SetValue(self, index)
 	stack = stack or 1
 
 	self.min:SetText(level ~= 1 and level)
-	self.owner:SetText(owner)
 	self.qty:SetText(stack > 1 and count)
 	self:Enable()
 end
@@ -144,11 +141,12 @@ function ns.CreateAuctionRow(parent)
 	row.ilvl = ilvl
 	kids[ilvl] = true
 
-	local owner = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+	local owner = ns.CreateAuctionSeller(row)
 	owner:SetWidth(75) owner:SetHeight(ROW_HEIGHT)
 	owner:SetPoint("LEFT", ilvl, "RIGHT", TEXT_GAP, 0)
 	owner:SetJustifyH("RIGHT")
 	row.owner = owner
+	kids[owner] = true
 
 	local timeleft = ns.CreateAuctionTimeLeft(row)
 	timeleft:SetWidth(45)
