@@ -7,7 +7,10 @@ local function SetValue(self, index)
 
 	local item_id = ns.GetAuctionItemID(index)
 	local _, _, _, _, _, _, _, stack = GetItemInfo(item_id)
-	self:SetText(stack and stack > 1 and count)
+	if not stack or stack == 1 then return self:SetText() end
+
+	local _, _, count = GetAuctionItemInfo("list", index)
+	self:SetText(count)
 end
 
 
