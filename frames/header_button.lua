@@ -2,43 +2,62 @@
 local myname, ns = ...
 
 local SORTS = {
-	buyout     = {"duration", "quantity", "name", "level", "quality", "bid", "buyout"},
-	buyout_rev = {     false,       true,  false,    true,     false, false,    false},
-	quantity     = {"duration", "buyoutthenbid", "name", "level", "quality", "quantity"},
-	quantity_rev = {     false,           false,  false,    true,     false,      false},
+	buyout     = {
+		"duration", false,
+		"quantity",  true,
+		"name",     false,
+		"level",     true,
+		"quality",  false,
+		"bid",      false,
+		"buyout",   false,
+	},
+	quantity = {
+		"duration",      false,
+		"buyoutthenbid", false,
+		"name",          false,
+		"level",          true,
+		"quality",       false,
+		"quantity",      false,
+	},
 }
 for _,column in pairs({"level", "duration", "seller", "bid", "quality"}) do
 	local data = AuctionSort["list_"..column]
 	local sort = {}
-	local rev = {}
 	for i,v in ipairs(data) do
 		table.insert(sort, v.column)
-		table.insert(rev, v.reverse)
+		table.insert(sort, v.reverse)
 	end
 	SORTS[column] = sort
-	SORTS[column.."_rev"] = rev
 end
 
 
+local function ApplySort(invert, column, reverse, ...)
+	local last_pair = select("#", ...) == 0
+
+	if last_pair and invert then reverse = not reverse end
+	SortAuctionSetSort("list", column, reverse)
+
+	if not last_pair then return ApplySort(invert, ...) end
+end
+
+
+local sortcolumns = {}
 local function SortAuctions(self)
-	-- change the sort as appropriate
-	local existingSortColumn, existingSortReverse = GetAuctionSort("list", 1)
-	local oppositeOrder = false
-	if existingSortColumn and existingSortColumn == self.sortcolumn then
-		oppositeOrder = not existingSortReverse
+	local sortcolumn = sortcolumns[self]
+	local sort = SORTS[sortcolumn]
+
+	-- Determine if we need to invert the sort
+	local sorted_column, sorted_reverse = GetAuctionSort("list", 1)
+	local invert = false
+	if sorted_column and sorted_column == sortcolumn then
+		-- If the last column is sorted in the defined direction, we need to invert
+		invert = (not not sorted_reverse) == sort[#sort]
 	end
 
-	-- clear the existing sort.
 	SortAuctionClearSort("list")
 
-	local revs = SORTS[self.sortcolumn.."_rev"]
-	for i,column in ipairs(SORTS[self.sortcolumn]) do -- set the columns
-		local reverse = revs[i]
-		if i == #revs and existingSortColumn and existingSortColumn == self.sortcolumn and (not not existingSortReverse) == reverse then reverse = not reverse end
-		SortAuctionSetSort("list", column, reverse)
-	end
-
-	AuctionFrameBrowse_Search() -- apply the sort
+	ApplySort(invert, unpack(sort))
+	AuctionFrameBrowse_Search()
 end
 
 
@@ -46,7 +65,7 @@ function ns.CreateHeaderButton(text, sortcolumn)
 	local butt = ns.NewColumnHeader(AuctionFrameBrowse)
 	butt:SetText(text)
 
-	butt.sortcolumn = sortcolumn
+	sortcolumns[butt] = sortcolumn
 	if sortcolumn then butt:SetScript("OnClick", SortAuctions) end
 
 	return butt
