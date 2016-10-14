@@ -18,11 +18,16 @@ panel:SetPoint("TOPLEFT", 188, -103)
 
 
 -- Hide default panels
-for i=1,8 do
-	local butt = _G["BrowseButton"..i]
-	butt:Hide()
-	butt.Show = butt.Hide
+local function Hide(frame)
+	frame:Hide()
+	frame.Show = frame.Hide
 end
+for i=1,8 do Hide(_G["BrowseButton"..i]) end
+Hide(BrowseQualitySort)
+Hide(BrowseLevelSort)
+Hide(BrowseHighBidderSort)
+Hide(BrowseDurationSort)
+Hide(BrowseCurrentBidSort)
 
 
 -- Disable updates on default panel
@@ -61,7 +66,7 @@ counttext:Show()
 counttext.Hide = counttext.Show
 
 
-local Update, UpdateArrows
+local Update
 local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetValue() - value*10) end
 local function RowOnClick(self)
 	if IsAltKeyDown() then
@@ -217,7 +222,7 @@ function Update(self, event)
 	if AuctionFrameBrowse.page == 0 then prevbutt:RealDisable() else prevbutt:RealEnable() end
 	if AuctionFrameBrowse.page == (math.ceil(totalAuctions/NUM_AUCTION_ITEMS_PER_PAGE) - 1) then nextbutt:RealDisable() else nextbutt:RealEnable() end
 
-	UpdateArrows()
+	ns.UpdateArrows()
 end
 
 panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
@@ -246,78 +251,4 @@ downbutt:SetScript("OnClick", function() scrollbar:RealSetValue(scrollbar:GetVal
 --      Headers      --
 -----------------------
 
-local row = rows[1]
-
-local function AnchorSort(butt, left, right, loffset)
-	right, loffset = right or left, loffset or (-TEXT_GAP/2 - 1)
-	butt:ClearAllPoints()
-	butt:SetPoint("TOP", AuctionFrameBrowse, "TOP", 0, -82)
-	butt:SetPoint("LEFT", left, "LEFT", loffset, 0)
-	butt:SetPoint("RIGHT", right, "RIGHT", TEXT_GAP/2 + 1, 0)
-	butt.SetWidth = noop
-end
-
-local ilvlsort = ns.MakeSortButton("iLvl")
-local buyoutsort = ns.MakeSortButton("Buyout", "buyout")
-local unitsort = ns.MakeSortButton("Unit BO")
-local qtysort = ns.MakeSortButton("#", "quantity")
-ns.MakeSortButton = nil
-
-AnchorSort(BrowseQualitySort, row.icon, row.name, -TEXT_GAP - 2)
-AnchorSort(BrowseLevelSort, row.min)
-AnchorSort(BrowseHighBidderSort, row.owner)
-AnchorSort(BrowseDurationSort, row.timeleft)
-AnchorSort(BrowseCurrentBidSort, row.bid)
-AnchorSort(ilvlsort, row.ilvl)
-AnchorSort(buyoutsort, row.buyout)
-AnchorSort(unitsort, row.unit)
-AnchorSort(qtysort, row.qty)
-
-BrowseDurationSort:SetText("Time")
-BrowseCurrentBidSort:SetText("Bid")
-ilvlsort:SetText("iLvl")
-buyoutsort:SetText("Buyout")
-unitsort:SetText("Unit BO")
-
-local function UpdateArrow(butt)
-	local primaryColumn, reversed = GetAuctionSort("list", 1)
-	if butt.sortcolumn == primaryColumn then
-		butt:SetSort(reversed and "DESC" or "ASC")
-	else
-		butt:SetSort()
-	end
-end
-
-function UpdateArrows()
-	UpdateArrow(buyoutsort)
-	UpdateArrow(qtysort)
-end
-
-ilvlsort:SetScript("OnClick", function(self)
-	if GetNumAuctionItems("list") > 100 then return end -- Failsafe, don't let sorting be enabled when we have done an all-scan
-	sortbyilvl = sortbyilvl == 1 and -1 or sortbyilvl == false and 1 or false
-	if sortbyilvl then
-		sortbyunit = false
-		unitsort:SetSort()
-		self:SetSort(sortbyilvl == -1 and "DESC" or "ASC")
-	else
-		self:SetSort()
-	end
-	wipe(sorttable)
-	Update()
-end)
-
-unitsort:SetScript("OnClick", function(self)
-	if GetNumAuctionItems("list") > 100 then return end -- Failsafe, don't let sorting be enabled when we have done an all-scan
-	sortbyunit = not sortbyunit
-	if sortbyunit then
-		sortbyilvl = false
-		ilvlsort:SetSort()
-		self:SetSort("ASC")
-	else
-		self:SetSort()
-	end
-	wipe(sorttable)
-	Update()
-end)
-unitsort:SetSort("ASC")
+ns.CreateHeader(rows[1])

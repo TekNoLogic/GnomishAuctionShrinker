@@ -1,23 +1,38 @@
 
 local myname, ns = ...
 
-local sorts = {
+local SORTS = {
 	buyout     = {"duration", "quantity", "name", "level", "quality", "bid", "buyout"},
 	buyout_rev = {     false,       true,  false,    true,     false, false,    false},
 	quantity     = {"duration", "buyoutthenbid", "name", "level", "quality", "quantity"},
 	quantity_rev = {     false,           false,  false,    true,     false,      false},
 }
+for _,column in pairs({"level", "duration", "seller", "bid", "quality"}) do
+	local data = AuctionSort["list_"..column]
+	local sort = {}
+	local rev = {}
+	for i,v in ipairs(data) do
+		table.insert(sort, v.column)
+		table.insert(rev, v.reverse)
+	end
+	SORTS[column] = sort
+	SORTS[column.."_rev"] = rev
+end
 
 
 local function SortAuctions(self)
-	local existingSortColumn, existingSortReverse = GetAuctionSort("list", 1) -- change the sort as appropriate
+	-- change the sort as appropriate
+	local existingSortColumn, existingSortReverse = GetAuctionSort("list", 1)
 	local oppositeOrder = false
-	if existingSortColumn and existingSortColumn == self.sortcolumn then oppositeOrder = not existingSortReverse end
+	if existingSortColumn and existingSortColumn == self.sortcolumn then
+		oppositeOrder = not existingSortReverse
+	end
 
-	SortAuctionClearSort("list") -- clear the existing sort.
+	-- clear the existing sort.
+	SortAuctionClearSort("list")
 
-	local revs = sorts[self.sortcolumn.."_rev"]
-	for i,column in ipairs(sorts[self.sortcolumn]) do -- set the columns
+	local revs = SORTS[self.sortcolumn.."_rev"]
+	for i,column in ipairs(SORTS[self.sortcolumn]) do -- set the columns
 		local reverse = revs[i]
 		if i == #revs and existingSortColumn and existingSortColumn == self.sortcolumn and (not not existingSortReverse) == reverse then reverse = not reverse end
 		SortAuctionSetSort("list", column, reverse)

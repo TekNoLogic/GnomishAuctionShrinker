@@ -60,8 +60,8 @@ function ns.NewColumnHeader(parent)
 
 	local right = butt:CreateTexture(nil, "BACKGROUND")
 	right:SetWidth(4)
-	right:SetPoint("TOPRIGHT")
-	right:SetPoint("BOTTOMRIGHT")
+	right:SetPoint("TOPRIGHT", 3, 0)
+	right:SetPoint("BOTTOMRIGHT", 3, 0)
 	right:SetTexture(TEXTURE)
 	right:SetTexCoord(58/64, 62/64, 0, 38/64)
 
