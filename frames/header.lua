@@ -94,4 +94,39 @@ function ns.CreateHeader(row)
 		Update()
 	end)
 	unitsort:SetSort("ASC")
+
+
+	local enabler = CreateFrame("Frame", nil, header)
+	enabler:Hide()
+
+	local all_scan
+	local buttons = {
+		qualitysort,
+		levelsort,
+		sellersort,
+		durationsort,
+		bidsort,
+		ilvlsort,
+		buyoutsort,
+		unitsort,
+		qtysort,
+	}
+	enabler:SetScript("OnShow", function(self)
+		for _,butt in pairs(buttons) do butt:Disable() end
+		if all_scan then self:Hide() end
+	end)
+
+	enabler:SetScript("OnUpdate", function(self)
+		if CanSendAuctionQuery("list") then
+			for _,butt in pairs(buttons) do butt:Enable() end
+			self:Hide()
+		end
+	end)
+
+	hooksecurefunc("QueryAuctionItems", function(_, _, _, _, _, _, get_all)
+		all_scan = get_all
+		enabler:Show()
+	end)
+
+	return header
 end
