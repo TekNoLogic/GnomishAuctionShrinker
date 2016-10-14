@@ -4,6 +4,7 @@ local myname, ns = ...
 
 local HEIGHT = 19
 local TEXTURE = "Interface\\FriendsFrame\\WhoFrame-ColumnTabs"
+local HIGHLIGHT = "Interface\\PaperDollInfoFrame\\UI-Character-Tab-Highlight"
 
 
 local sorts = {}
@@ -51,34 +52,35 @@ function ns.NewColumnHeader(parent)
 	fs:SetPoint("LEFT", butt, "LEFT", 8, 0)
 
 	local left = butt:CreateTexture(nil, "BACKGROUND")
-	left:SetSize(5, HEIGHT)
+	left:SetWidth(5)
 	left:SetPoint("TOPLEFT")
+	left:SetPoint("BOTTOMLEFT")
 	left:SetTexture(TEXTURE)
-	left:SetTexCoord(0, 0.078125, 0, 0.59375)
+	left:SetTexCoord(0, 5/64, 0, 38/64)
 
 	local right = butt:CreateTexture(nil, "BACKGROUND")
-	right:SetSize(4, HEIGHT)
+	right:SetWidth(4)
 	right:SetPoint("TOPRIGHT")
+	right:SetPoint("BOTTOMRIGHT")
 	right:SetTexture(TEXTURE)
-	right:SetTexCoord(0.90625, 0.96875, 0, 0.59375)
+	right:SetTexCoord(58/64, 62/64, 0, 38/64)
 
 	local middle = butt:CreateTexture(nil, "BACKGROUND")
-	middle:SetHeight(HEIGHT)
-	middle:SetPoint("LEFT", left, "RIGHT")
-	middle:SetPoint("RIGHT", right, "LEFT")
+	middle:SetPoint("TOPLEFT", left, "TOPRIGHT")
+	middle:SetPoint("BOTTOMRIGHT", right, "BOTTOMLEFT")
 	middle:SetTexture(TEXTURE)
-	middle:SetTexCoord(0.078125, 0.90625, 0, 0.59375)
+	middle:SetTexCoord(5/64, 58/64, 0, 38/64)
 
 	local arrow = butt:CreateTexture()
 	arrow:ClearAllPoints()
 	arrow:SetPoint("LEFT", fs, "RIGHT", 0, -2)
-	arrow:SetWidth(9) arrow:SetHeight(8)
+	arrow:SetSize(9, 8)
 	arrow:SetTexture("Interface\\Buttons\\UI-SortArrow")
-	arrow:SetTexCoord(0, 0.5625, 0, 1)
+	arrow:SetTexCoord(0, 9/16, 0, 1)
 	arrow:Hide()
 	arrows[butt] = arrow
 
-	butt:SetHighlightTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-Highlight", "ADD")
+	butt:SetHighlightTexture(HIGHLIGHT, "ADD")
 	local highlight = butt:GetHighlightTexture()
 	highlight:ClearAllPoints()
 	highlight:SetPoint("LEFT")
