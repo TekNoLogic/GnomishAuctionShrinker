@@ -33,6 +33,6 @@ frames\auction_seller.lua
 frames\auction_time_left.lua
 frames\auction_unit_buyout.lua
 frames\header.lua
+frames\header_button.lua
 
-SortButton.lua
 GnomishAuctionShrinker.lua

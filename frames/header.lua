@@ -23,17 +23,17 @@ function ns.CreateHeader(row)
 	local header = CreateFrame("Frame", nil, AuctionFrameBrowse)
 	header:SetPoint("TOP", 0, -82)
 
-	local qualitysort = ns.MakeSortButton("Rarity", "quality")
-	local levelsort = ns.MakeSortButton("Lvl", "level")
-	local sellersort = ns.MakeSortButton("Seller", "seller")
-	local durationsort = ns.MakeSortButton("Time", "duration")
-	local bidsort = ns.MakeSortButton("Bid", "bid")
+	local qualitysort = ns.CreateHeaderButton("Rarity", "quality")
+	local levelsort = ns.CreateHeaderButton("Lvl", "level")
+	local sellersort = ns.CreateHeaderButton("Seller", "seller")
+	local durationsort = ns.CreateHeaderButton("Time", "duration")
+	local bidsort = ns.CreateHeaderButton("Bid", "bid")
 
-	local ilvlsort = ns.MakeSortButton("iLvl")
-	local buyoutsort = ns.MakeSortButton("Buyout", "buyout")
-	local unitsort = ns.MakeSortButton("Unit BO")
-	local qtysort = ns.MakeSortButton("#", "quantity")
-	ns.MakeSortButton = nil
+	local ilvlsort = ns.CreateHeaderButton("iLvl")
+	local buyoutsort = ns.CreateHeaderButton("Buyout", "buyout")
+	local unitsort = ns.CreateHeaderButton("Unit BO")
+	local qtysort = ns.CreateHeaderButton("#", "quantity")
+	ns.CreateHeaderButton = nil
 
 	AnchorSort(qualitysort, row.icon, row.name, -TEXT_GAP - 2)
 	AnchorSort(levelsort, row.min)

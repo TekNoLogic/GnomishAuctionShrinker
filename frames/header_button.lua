@@ -42,7 +42,7 @@ local function SortAuctions(self)
 end
 
 
-function ns.MakeSortButton(text, sortcolumn)
+function ns.CreateHeaderButton(text, sortcolumn)
 	local butt = ns.NewColumnHeader(AuctionFrameBrowse)
 	butt:SetText(text)
 
