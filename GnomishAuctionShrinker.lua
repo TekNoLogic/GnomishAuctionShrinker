@@ -282,9 +282,10 @@ unitsort:SetText("Unit BO")
 local function UpdateArrow(butt)
 	local primaryColumn, reversed = GetAuctionSort("list", 1)
 	if butt.sortcolumn == primaryColumn then
-		butt.arrow:Show()
-		butt.arrow:SetTexCoord(0, 0.5625, reversed and 1 or 0, reversed and 0 or 1)
-	else butt.arrow:Hide() end
+		butt:SetSort(reversed and "DESC" or "ASC")
+	else
+		butt:SetSort()
+	end
 end
 
 function UpdateArrows()
@@ -297,10 +298,11 @@ ilvlsort:SetScript("OnClick", function(self)
 	sortbyilvl = sortbyilvl == 1 and -1 or sortbyilvl == false and 1 or false
 	if sortbyilvl then
 		sortbyunit = false
-		unitsort.arrow:Hide()
-		self.arrow:SetTexCoord(0, 0.5625, sortbyilvl == -1 and 1 or 0, sortbyilvl == -1 and 0 or 1)
-		self.arrow:Show()
-	else self.arrow:Hide() end
+		unitsort:SetSort()
+		self:SetSort(sortbyilvl == -1 and "DESC" or "ASC")
+	else
+		self:SetSort()
+	end
 	wipe(sorttable)
 	Update()
 end)
@@ -310,10 +312,12 @@ unitsort:SetScript("OnClick", function(self)
 	sortbyunit = not sortbyunit
 	if sortbyunit then
 		sortbyilvl = false
-		ilvlsort.arrow:Hide()
-		self.arrow:Show()
-	else self.arrow:Hide() end
+		ilvlsort:SetSort()
+		self:SetSort("ASC")
+	else
+		self:SetSort()
+	end
 	wipe(sorttable)
 	Update()
 end)
-unitsort.arrow:Show()
+unitsort:SetSort("ASC")
