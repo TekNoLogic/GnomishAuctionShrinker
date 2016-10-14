@@ -20,10 +20,10 @@ local function SetSort(self, sort)
 
 	if sort == "ASC" then
 		arrow:Show()
-		arrow:SetTexCoord(0, 9/16, 0, 1)
+		arrow:SetTexCoord(29/64, 41/64, 1/64, 13/64)
 	elseif sort == "DESC" then
 		arrow:Show()
-		arrow:SetTexCoord(0, 9/16, 1, 0)
+		arrow:SetTexCoord(29/64, 41/64, 13/64, 1/64)
 	else
 		arrow:Hide()
 	end
@@ -73,10 +73,10 @@ function ns.NewColumnHeader(parent)
 
 	local arrow = butt:CreateTexture()
 	arrow:ClearAllPoints()
-	arrow:SetPoint("LEFT", fs, "RIGHT", 0, -2)
-	arrow:SetSize(9, 8)
-	arrow:SetTexture("Interface\\Buttons\\UI-SortArrow")
-	arrow:SetTexCoord(0, 9/16, 0, 1)
+	arrow:SetPoint("LEFT", fs, "RIGHT", 1, 0)
+	arrow:SetSize(8,12)
+	arrow:SetTexture("Interface\\Buttons\\SquareButtonTextures")
+	arrow:SetTexCoord(29/64, 41/64, 1/64, 13/64)
 	arrow:Hide()
 	arrows[butt] = arrow
 
