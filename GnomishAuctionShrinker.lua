@@ -125,10 +125,12 @@ end
 --      Updater      --
 -----------------------
 
-local sorttable, sortbyunit, sortbyilvl = {}, true, false
+ns.sortbyunit = true
+ns.sortbyilvl = false
+local sorttable = {}
 local orig, wipe = QueryAuctionItems, wipe
 function QueryAuctionItems(...)
-	if select(10, ...) then sortbyunit, sortbyilvl = false, false end
+	if select(10, ...) then ns.sortbyunit, ns.sortbyilvl = false, false end
 	wipe(sorttable)
 	scrollbar:RealSetValue(0)
 	return orig(...)
@@ -155,7 +157,7 @@ local function iLvlSort(a,b)
 	local _, _, _, iLevelb = GetItemInfo(linkb)
 
 	if iLevela == iLevelb then return UnitSort(a,b) end
-	if sortbyilvl == 1 then return iLevela < iLevelb
+	if ns.sortbyilvl == 1 then return iLevela < iLevelb
 	else return iLevela > iLevelb end
 end
 
@@ -176,13 +178,13 @@ function Update(self, event)
 
 	BrowseNoResultsText:SetShown(numBatchAuctions == 0)
 
-	if (sortbyunit or sortbyilvl) and not next(sorttable) then
+	if (ns.sortbyunit or ns.sortbyilvl) and not next(sorttable) then
 		for i=1,numBatchAuctions do table.insert(sorttable, i) end
-		table.sort(sorttable, sortbyunit and UnitSort or iLvlSort)
+		table.sort(sorttable, ns.sortbyunit and UnitSort or iLvlSort)
 	end
 
 	for i,row in ipairs(rows) do
-		local index = (sortbyunit or sortbyilvl) and sorttable[offset + i] or
+		local index = (ns.sortbyunit or ns.sortbyilvl) and sorttable[offset + i] or
 		              (offset + i)
 		row:SetValue(index)
 	end
@@ -221,8 +223,6 @@ function Update(self, event)
 
 	if AuctionFrameBrowse.page == 0 then prevbutt:RealDisable() else prevbutt:RealEnable() end
 	if AuctionFrameBrowse.page == (math.ceil(totalAuctions/NUM_AUCTION_ITEMS_PER_PAGE) - 1) then nextbutt:RealDisable() else nextbutt:RealEnable() end
-
-	ns.UpdateArrows()
 end
 
 panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")

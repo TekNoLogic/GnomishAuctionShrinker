@@ -44,46 +44,47 @@ function ns.CreateHeader(row)
 	AnchorSort(unitsort, row.unit)
 	AnchorSort(qtysort, row.qty)
 
-	local function UpdateArrow(butt)
-		local primaryColumn, reversed = GetAuctionSort("list", 1)
-		if butt.sortcolumn == primaryColumn then
-			butt:SetSort(reversed and "DESC" or "ASC")
-		else
-			butt:SetSort()
-		end
+	function ilvlsort:UpdateArrow()
+		local sort
+		if ns.sortbyilvl == -1 then sort = "DESC" end
+		if ns.sortbyilvl == 1 then sort = "ASC" end
+		self:SetSort(sort)
 	end
 
-	function ns.UpdateArrows()
-		UpdateArrow(buyoutsort)
-		UpdateArrow(qtysort)
+	function unitsort:UpdateArrow()
+		self:SetSort(ns.sortbyunit and "ASC")
 	end
 
 	ilvlsort:SetScript("OnClick", function(self)
-		if GetNumAuctionItems("list") > 100 then return end -- Failsafe, don't let sorting be enabled when we have done an all-scan
-		sortbyilvl = sortbyilvl == 1 and -1 or sortbyilvl == false and 1 or false
-		if sortbyilvl then
-			sortbyunit = false
-			unitsort:SetSort()
-			self:SetSort(sortbyilvl == -1 and "DESC" or "ASC")
+		-- Failsafe, don't let sorting be enabled when we have done an all-scan
+		if GetNumAuctionItems("list") > 100 then return end
+
+		if ns.sortbyilvl == 1 then
+			ns.sortbyilvl = -1
+			ns.sortbyunit = false
+		elseif ns.sortbyilvl == false then
+			ns.sortbyilvl = 1
+			ns.sortbyunit = false
 		else
-			self:SetSort()
+			ns.sortbyilvl = false
 		end
+
+		self:UpdateArrow()
+		unitsort:UpdateArrow()
 		wipe(sorttable)
 		Update()
 	end)
 
 	unitsort:SetScript("OnClick", function(self)
-		if GetNumAuctionItems("list") > 100 then return end -- Failsafe, don't let sorting be enabled when we have done an all-scan
-		sortbyunit = not sortbyunit
-		if sortbyunit then
-			sortbyilvl = false
-			ilvlsort:SetSort()
-			self:SetSort("ASC")
-		else
-			self:SetSort()
-		end
+		-- Failsafe, don't let sorting be enabled when we have done an all-scan
+		if GetNumAuctionItems("list") > 100 then return end
+
+		ns.sortbyunit = not ns.sortbyunit
+		if ns.sortbyunit then ns.sortbyilvl = false end
+
+		self:UpdateArrow()
+		ilvlsort:UpdateArrow()
 		wipe(sorttable)
 		Update()
 	end)
-	unitsort:SetSort("ASC")
 end
