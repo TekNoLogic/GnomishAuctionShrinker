@@ -46,12 +46,6 @@ function ns.CreateHeader(row)
 	AnchorSort(unitsort, row.unit)
 	AnchorSort(qtysort, row.qty)
 
-	BrowseDurationSort:SetText("Time")
-	BrowseCurrentBidSort:SetText("Bid")
-	ilvlsort:SetText("iLvl")
-	buyoutsort:SetText("Buyout")
-	unitsort:SetText("Unit BO")
-
 	local function UpdateArrow(butt)
 		local primaryColumn, reversed = GetAuctionSort("list", 1)
 		if butt.sortcolumn == primaryColumn then
