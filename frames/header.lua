@@ -71,8 +71,8 @@ function ns.CreateHeader(row)
 
 		self:UpdateArrow()
 		unitsort:UpdateArrow()
-		wipe(sorttable)
-		Update()
+		wipe(ns.sorttable)
+		ns.Update()
 	end)
 
 	unitsort:SetScript("OnClick", function(self)
@@ -84,7 +84,7 @@ function ns.CreateHeader(row)
 
 		self:UpdateArrow()
 		ilvlsort:UpdateArrow()
-		wipe(sorttable)
-		Update()
+		wipe(ns.sorttable)
+		ns.Update()
 	end)
 end

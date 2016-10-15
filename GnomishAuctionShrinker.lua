@@ -66,7 +66,6 @@ counttext:Show()
 counttext.Hide = counttext.Show
 
 
-local Update
 local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetValue() - value*10) end
 local function RowOnClick(self)
 	if IsAltKeyDown() then
@@ -88,7 +87,7 @@ local function RowOnClick(self)
 		if GetCVarBool("auctionDisplayOnCharacter") then DressUpItemLink(self.link) end
 		SetSelectedAuctionItem("list", self.index)
 		CloseAuctionStaticPopups() -- Close any auction related popups
-		Update()
+		ns.Update()
 	end
 end
 local function IconOnEnter(self)
@@ -127,11 +126,11 @@ end
 
 ns.sortbyunit = true
 ns.sortbyilvl = false
-local sorttable = {}
+ns.sorttable = {}
 local orig, wipe = QueryAuctionItems, wipe
 function QueryAuctionItems(...)
 	if select(10, ...) then ns.sortbyunit, ns.sortbyilvl = false, false end
-	wipe(sorttable)
+	wipe(ns.sorttable)
 	scrollbar:RealSetValue(0)
 	return orig(...)
 end
@@ -162,7 +161,7 @@ local function iLvlSort(a,b)
 end
 
 local offset = 0
-function Update(self, event)
+function ns.Update(self, event)
 	local selected = GetSelectedAuctionItem("list")
 	AuctionFrame.buyoutPrice = nil
 	bidbutt:Disable()
@@ -171,20 +170,20 @@ function Update(self, event)
 	local numBatchAuctions, totalAuctions = GetNumAuctionItems("list")
 
 	if event == "AUCTION_ITEM_LIST_UPDATE" then
-		wipe(sorttable)
+		wipe(ns.sorttable)
 		AuctionFrameBrowse.isSearching = nil
 		BrowseNoResultsText:SetText(BROWSE_NO_RESULTS)
 	end
 
 	BrowseNoResultsText:SetShown(numBatchAuctions == 0)
 
-	if (ns.sortbyunit or ns.sortbyilvl) and not next(sorttable) then
-		for i=1,numBatchAuctions do table.insert(sorttable, i) end
-		table.sort(sorttable, ns.sortbyunit and UnitSort or iLvlSort)
+	if (ns.sortbyunit or ns.sortbyilvl) and not next(ns.sorttable) then
+		for i=1,numBatchAuctions do table.insert(ns.sorttable, i) end
+		table.sort(ns.sorttable, ns.sortbyunit and UnitSort or iLvlSort)
 	end
 
 	for i,row in ipairs(rows) do
-		local index = (ns.sortbyunit or ns.sortbyilvl) and sorttable[offset + i] or
+		local index = (ns.sortbyunit or ns.sortbyilvl) and ns.sorttable[offset + i] or
 		              (offset + i)
 		row:SetValue(index)
 	end
@@ -226,8 +225,8 @@ function Update(self, event)
 end
 
 panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
-panel:SetScript("OnEvent", Update)
-panel:SetScript("OnShow", Update)
+panel:SetScript("OnEvent", ns.Update)
+panel:SetScript("OnShow", ns.Update)
 
 
 -------------------------
@@ -241,7 +240,7 @@ scrollbar:SetScript("OnValueChanged", function(self, value, ...)
 	local min, max = self:GetMinMaxValues()
 	if value == min then upbutt:Disable() else upbutt:Enable() end
 	if value == max then downbutt:Disable() else downbutt:Enable() end
-	Update()
+	ns.Update()
 end)
 upbutt:SetScript("OnClick", function() scrollbar:RealSetValue(scrollbar:GetValue() - 10); PlaySound("UChatScrollButton") end)
 downbutt:SetScript("OnClick", function() scrollbar:RealSetValue(scrollbar:GetValue() + 10); PlaySound("UChatScrollButton") end)
