@@ -156,8 +156,11 @@ local function iLvlSort(a,b)
 	local _, _, _, iLevelb = GetItemInfo(linkb)
 
 	if iLevela == iLevelb then return UnitSort(a,b) end
-	if ns.sortbyilvl == 1 then return iLevela < iLevelb
-	else return iLevela > iLevelb end
+	if ns.sortbyilvl == 1 then
+		return (iLevela or 0) < (iLevelb or 0)
+	else
+		return (iLevela or 0) > (iLevelb or 0)
+	end
 end
 
 local offset = 0
