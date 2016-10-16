@@ -268,4 +268,4 @@ downbutt:SetScript("OnClick", function() scrollbar:RealSetValue(scrollbar:GetVal
 --      Headers      --
 -----------------------
 
-ns.CreateHeader(panel, rows[1])
+ns.CreateHeader(panel, columns)
