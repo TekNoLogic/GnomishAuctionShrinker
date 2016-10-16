@@ -21,7 +21,7 @@ function ns.CreateAuctionItem(parent)
 
 	local icon = ns.CreateAuctionIcon(item)
 	icon:SetSize(ICON_SIZE, ICON_SIZE)
-	icon:SetPoint("LEFT", item)
+	icon:SetPoint("LEFT", item, GAP/2, 0)
 	icons[item] = icon
 
 	local name = ns.CreateAuctionName(item)

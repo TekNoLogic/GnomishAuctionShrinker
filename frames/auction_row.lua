@@ -122,8 +122,8 @@ end
 local function AnchorCell(cell, column, row)
 	cell:SetPoint("TOP", row)
 	cell:SetPoint("BOTTOM", row)
-	cell:SetPoint("LEFT", column, TEXT_GAP, 0)
-	cell:SetPoint("RIGHT", column)
+	cell:SetPoint("LEFT", column, TEXT_GAP/2, 0)
+	cell:SetPoint("RIGHT", column, -TEXT_GAP/2, 0)
 end
 
 
