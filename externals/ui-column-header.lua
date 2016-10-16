@@ -40,7 +40,7 @@ local function OnClick(self)
 end
 
 
-function ns.NewColumnHeader(parent)
+function ns.CreateColumnHeader(parent)
 	local butt = CreateFrame("Button", nil, parent)
 	butt:SetHeight(HEIGHT)
 

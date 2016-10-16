@@ -26,7 +26,7 @@ end
 
 
 function ns.CreateHeaderButton(parent, text, column)
-	local butt = ns.NewColumnHeader(parent)
+	local butt = ns.CreateColumnHeader(parent)
 	butt:SetText(text)
 
 	butt.UpdateArrow = UpdateArrow
