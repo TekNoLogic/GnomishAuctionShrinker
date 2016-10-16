@@ -119,7 +119,15 @@ local function SetValue(self, index)
 end
 
 
-function ns.CreateAuctionRow(parent)
+local function AnchorCell(cell, column, row)
+	cell:SetPoint("TOP", row)
+	cell:SetPoint("BOTTOM", row)
+	cell:SetPoint("LEFT", column, TEXT_GAP, 0)
+	cell:SetPoint("RIGHT", column)
+end
+
+
+function ns.CreateAuctionRow(parent, columns)
 	local row = CreateFrame("Button", nil, parent)
 	row:Disable()
 
@@ -141,65 +149,54 @@ function ns.CreateAuctionRow(parent)
 	children[row] = kids
 
 	local item = ns.CreateAuctionItem(row)
-	item:SetWidth(177)
-	item:SetPoint("LEFT", row, TEXT_GAP, 0)
-	item:SetPoint("TOP")
-	item:SetPoint("BOTTOM")
+	AnchorCell(item, columns[1], row)
 	row.item = item
 	kids[item] = true
 
 	local min = ns.CreateAuctionReqLevel(row)
-	min:SetWidth(23)
-	min:SetPoint("LEFT", item, "RIGHT", TEXT_GAP, 0)
+	AnchorCell(min, columns[2], row)
 	min:SetJustifyH("RIGHT")
 	row.min = min
 	kids[min] = true
 
 	local ilvl = ns.CreateAuctionIlevel(row)
-	ilvl:SetWidth(33)
-	ilvl:SetPoint("LEFT", min, "RIGHT", TEXT_GAP, 0)
+	AnchorCell(ilvl, columns[3], row)
 	ilvl:SetJustifyH("RIGHT")
 	row.ilvl = ilvl
 	kids[ilvl] = true
 
 	local owner = ns.CreateAuctionSeller(row)
-	owner:SetWidth(75) owner:SetHeight(ROW_HEIGHT)
-	owner:SetPoint("LEFT", ilvl, "RIGHT", TEXT_GAP, 0)
+	AnchorCell(owner, columns[4], row)
 	owner:SetJustifyH("RIGHT")
 	row.owner = owner
 	kids[owner] = true
 
 	local timeleft = ns.CreateAuctionTimeLeft(row)
-	timeleft:SetWidth(45)
-	timeleft:SetPoint("LEFT", owner, "RIGHT", TEXT_GAP, 0)
+	AnchorCell(timeleft, columns[5], row)
 	timeleft:SetJustifyH("RIGHT")
 	row.timeleft = timeleft
 	kids[timeleft] = true
 
 	local bid = ns.CreateAuctionBid(row)
-	bid:SetWidth(65)
-	bid:SetPoint("LEFT", timeleft, "RIGHT", TEXT_GAP, 0)
+	AnchorCell(bid, columns[6], row)
 	bid:SetJustifyH("RIGHT")
 	row.bid = bid
 	kids[bid] = true
 
 	local buyout = ns.CreateAuctionBuyout(row)
-	buyout:SetWidth(65)
-	buyout:SetPoint("LEFT", bid, "RIGHT", TEXT_GAP, 0)
+	AnchorCell(buyout, columns[7], row)
 	buyout:SetJustifyH("RIGHT")
 	row.buyout = buyout
 	kids[buyout] = true
 
 	local unit = ns.CreateAuctionUnitBuyout(row)
-	unit:SetWidth(65)
-	unit:SetPoint("LEFT", buyout, "RIGHT", TEXT_GAP, 0)
+	AnchorCell(unit, columns[8], row)
 	unit:SetJustifyH("RIGHT")
 	row.unit = unit
 	kids[unit] = true
 
 	local qty = ns.CreateAuctionQty(row)
-	qty:SetWidth(23)
-	qty:SetPoint("LEFT", unit, "RIGHT", TEXT_GAP, 0)
+	AnchorCell(qty, columns[9], row)
 	qty:SetJustifyH("RIGHT")
 	row.qty = qty
 	kids[qty] = true

@@ -108,9 +108,24 @@ local function IconOnEnter(self)
 	if IsModifiedClick("DRESSUP") then ShowInspectCursor() else ResetCursor() end
 end
 
+
+local columns = {}
+local COLUMN_WIDTHS = {181, 27, 37, 79, 49, 69, 69, 69, 27}
+for i,width in ipairs(COLUMN_WIDTHS) do
+	local column = CreateFrame("Frame", nil, panel)
+	column:SetSize(width, 1)
+	if i == 1 then
+		column:SetPoint("LEFT", panel)
+	else
+		column:SetPoint("LEFT", columns[i-1], "RIGHT")
+	end
+	columns[i] = column
+end
+
+
 local rows = {}
 for i=1,NUM_ROWS do
-	local row = ns.CreateAuctionRow(panel)
+	local row = ns.CreateAuctionRow(panel, columns)
 	row:SetHeight(ROW_HEIGHT)
 	row:SetPoint("LEFT")
 	row:SetPoint("RIGHT")
