@@ -140,22 +140,17 @@ function ns.CreateAuctionRow(parent)
 	local kids = {}
 	children[row] = kids
 
-	local icon = ns.CreateAuctionIcon(row)
-	icon:SetSize(ROW_HEIGHT-2, ROW_HEIGHT-2)
-	icon:SetPoint("LEFT", row, TEXT_GAP, 0)
-	row.icon = icon
-	kids[icon] = true
-
-	local name = ns.CreateAuctionName(row)
-	name:SetSize(155, ROW_HEIGHT)
-	name:SetPoint("LEFT", icon, "RIGHT", TEXT_GAP, 0)
-	name:SetJustifyH("LEFT")
-	row.name = name
-	kids[name] = true
+	local item = ns.CreateAuctionItem(row)
+	item:SetWidth(177)
+	item:SetPoint("LEFT", row, TEXT_GAP, 0)
+	item:SetPoint("TOP")
+	item:SetPoint("BOTTOM")
+	row.item = item
+	kids[item] = true
 
 	local min = ns.CreateAuctionReqLevel(row)
 	min:SetWidth(23)
-	min:SetPoint("LEFT", name, "RIGHT", TEXT_GAP, 0)
+	min:SetPoint("LEFT", item, "RIGHT", TEXT_GAP, 0)
 	min:SetJustifyH("RIGHT")
 	row.min = min
 	kids[min] = true

@@ -9,8 +9,8 @@ local ROW_HEIGHT = math.floor((305-BOTTOM_GAP)/NUM_ROWS)
 
 local function AnchorSort(butt, column)
 	butt:SetPoint("TOP")
-	butt:SetPoint("LEFT", column, "LEFT", -3, 0)
-	butt:SetPoint("RIGHT", column, "RIGHT")
+	butt:SetPoint("LEFT", column, -3, 0)
+	butt:SetPoint("RIGHT", column)
 end
 
 
@@ -22,9 +22,7 @@ function ns.CreateHeader(parent, row)
 
 
 	local qualitysort = ns.CreateHeaderButton(header, "Item", "quality")
-	qualitysort:SetPoint("TOP")
-	qualitysort:SetPoint("LEFT", row.icon, "LEFT", -6, 0)
-	qualitysort:SetPoint("RIGHT", row.name, "RIGHT")
+	AnchorSort(qualitysort, row.item)
 
 
 	local levelsort = ns.CreateHeaderButton(header, "Lvl", "level")
