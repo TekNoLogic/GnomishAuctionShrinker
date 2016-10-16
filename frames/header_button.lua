@@ -25,8 +25,8 @@ local function OnShow(self)
 end
 
 
-function ns.CreateHeaderButton(text, column)
-	local butt = ns.NewColumnHeader(AuctionFrameBrowse)
+function ns.CreateHeaderButton(parent, text, column)
+	local butt = ns.NewColumnHeader(parent)
 	butt:SetText(text)
 
 	butt.UpdateArrow = UpdateArrow

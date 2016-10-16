@@ -5,44 +5,34 @@ local myname, ns = ...
 local BUYOUT_LIMIT = 800 * 100 * 100 -- 800g
 local NUM_ROWS, BOTTOM_GAP = 14, 25
 local ROW_HEIGHT = math.floor((305-BOTTOM_GAP)/NUM_ROWS)
-local TEXT_GAP = 4
-local noop = function() end
 
 
-local function AnchorSort(butt, left, right, loffset)
-	right, loffset = right or left, loffset or (-TEXT_GAP/2 - 1)
-	butt:ClearAllPoints()
-	butt:SetPoint("TOP", AuctionFrameBrowse, "TOP", 0, -82)
-	butt:SetPoint("LEFT", left, "LEFT", loffset, 0)
-	butt:SetPoint("RIGHT", right, "RIGHT")
-	butt.SetWidth = noop
+local function AnchorSort(butt, column)
+	butt:SetPoint("TOP")
+	butt:SetPoint("LEFT", column, "LEFT", -3, 0)
+	butt:SetPoint("RIGHT", column, "RIGHT")
 end
 
 
-function ns.CreateHeader(row)
-	local header = CreateFrame("Frame", nil, AuctionFrameBrowse)
-	header:SetPoint("TOP", 0, -82)
+function ns.CreateHeader(parent, row)
+	local header = CreateFrame("Frame", nil, parent)
+	header:SetHeight(19)
+	header:SetPoint("BOTTOMLEFT", parent, "TOPLEFT", 0, 2)
+	header:SetPoint("RIGHT")
 
-	local qualitysort = ns.CreateHeaderButton("Item", "quality")
-	local levelsort = ns.CreateHeaderButton("Lvl", "level")
-	local ilvlsort = ns.CreateHeaderButton("iLvl")
-	local sellersort = ns.CreateHeaderButton("Seller", "seller")
-	local durationsort = ns.CreateHeaderButton("Time", "duration")
-	local bidsort = ns.CreateHeaderButton("Bid", "bid")
-	local buyoutsort = ns.CreateHeaderButton("Buyout", "buyout")
-	local unitsort = ns.CreateHeaderButton("Unit BO")
-	local qtysort = ns.CreateHeaderButton("#", "quantity")
-	ns.CreateHeaderButton = nil
 
-	AnchorSort(qualitysort, row.icon, row.name, -TEXT_GAP - 2)
+	local qualitysort = ns.CreateHeaderButton(header, "Item", "quality")
+	qualitysort:SetPoint("TOP")
+	qualitysort:SetPoint("LEFT", row.icon, "LEFT", -6, 0)
+	qualitysort:SetPoint("RIGHT", row.name, "RIGHT")
+
+
+	local levelsort = ns.CreateHeaderButton(header, "Lvl", "level")
 	AnchorSort(levelsort, row.min)
+
+
+	local ilvlsort = ns.CreateHeaderButton(header, "iLvl")
 	AnchorSort(ilvlsort, row.ilvl)
-	AnchorSort(sellersort, row.owner)
-	AnchorSort(durationsort, row.timeleft)
-	AnchorSort(bidsort, row.bid)
-	AnchorSort(buyoutsort, row.buyout)
-	AnchorSort(unitsort, row.unit)
-	AnchorSort(qtysort, row.qty)
 
 	function ilvlsort:UpdateArrow()
 		local sort
@@ -51,9 +41,37 @@ function ns.CreateHeader(row)
 		self:SetSort(sort)
 	end
 
+
+	local sellersort = ns.CreateHeaderButton(header, "Seller", "seller")
+	AnchorSort(sellersort, row.owner)
+
+
+	local durationsort = ns.CreateHeaderButton(header, "Time", "duration")
+	AnchorSort(durationsort, row.timeleft)
+
+
+	local bidsort = ns.CreateHeaderButton(header, "Bid", "bid")
+	AnchorSort(bidsort, row.bid)
+
+
+	local buyoutsort = ns.CreateHeaderButton(header, "Buyout", "buyout")
+	AnchorSort(buyoutsort, row.buyout)
+
+
+	local unitsort = ns.CreateHeaderButton(header, "Unit BO")
+	AnchorSort(unitsort, row.unit)
+
 	function unitsort:UpdateArrow()
 		self:SetSort(ns.sortbyunit and "ASC")
 	end
+
+
+	local qtysort = ns.CreateHeaderButton(header, "#", "quantity")
+	AnchorSort(qtysort, row.qty)
+
+
+	ns.CreateHeaderButton = nil
+
 
 	ilvlsort:SetScript("OnClick", function(self)
 		-- Failsafe, don't let sorting be enabled when we have done an all-scan
