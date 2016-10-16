@@ -67,46 +67,6 @@ counttext.Hide = counttext.Show
 
 
 local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetValue() - value*10) end
-local function RowOnClick(self)
-	if IsAltKeyDown() then
-		SetSelectedAuctionItem("list", self.index)
-		local _, _, _, _, _, _, _, _, _, buyout = GetAuctionItemInfo("list", self.index)
-
-		if buyout > BUYOUT_LIMIT then
-			SetSelectedAuctionItem("list", self.index)
-			AuctionFrame.buyoutPrice = buyout
-			StaticPopup_Show("BUYOUT_AUCTION")
-			BrowseBuyoutButton:Disable()
-			return
-		end
-
-		PlaceAuctionBid("list", self.index, buyout)
-		CloseAuctionStaticPopups()
-	elseif IsModifiedClick() then HandleModifiedItemClick(self.link)
-	else
-		if GetCVarBool("auctionDisplayOnCharacter") then DressUpItemLink(self.link) end
-		SetSelectedAuctionItem("list", self.index)
-		CloseAuctionStaticPopups() -- Close any auction related popups
-		ns.Update()
-	end
-end
-local function IconOnEnter(self)
-	if not self.row.index then return end
-
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-
-	local hasCooldown, speciesID, level, breedQuality, maxHealth, power, speed,
-	      name = GameTooltip:SetAuctionItem("list", self.row.index)
-	if speciesID and speciesID > 0 then
-		BattlePetToolTip_Show(speciesID, level, breedQuality, maxHealth, power,
-			                    speed, name)
-		return
-	end
-
-	GameTooltip_ShowCompareItem()
-
-	if IsModifiedClick("DRESSUP") then ShowInspectCursor() else ResetCursor() end
-end
 
 
 local columns = ns.CreateColumns(panel)
