@@ -10,11 +10,12 @@ end
 
 for i=1,8 do Hide(_G["BrowseButton"..i]) end
 
-Hide(BrowseQualitySort)
-Hide(BrowseLevelSort)
-Hide(BrowseHighBidderSort)
-Hide(BrowseDurationSort)
 Hide(BrowseCurrentBidSort)
+Hide(BrowseDurationSort)
+Hide(BrowseHighBidderSort)
+Hide(BrowseLevelSort)
+Hide(BrowseNextPageButton)
+Hide(BrowseQualitySort)
 
 
 -- Disable updates on default panel

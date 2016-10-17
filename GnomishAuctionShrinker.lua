@@ -23,15 +23,11 @@ local scrollbar, upbutt, downbutt = BrowseScrollFrameScrollBar, BrowseScrollFram
 scrollbar.RealSetValue, scrollbar.RealSetMinMaxValues, scrollbar.RealSetValueStep = scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep
 scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep = noop, noop, noop
 
-local nextbutt, prevbutt, counttext = BrowseNextPageButton, BrowsePrevPageButton, BrowseSearchCountText
-nextbutt:SetParent(panel)
-nextbutt:SetWidth(24) nextbutt:SetHeight(24)
-nextbutt:ClearAllPoints()
-nextbutt:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", 0, 0)
-nextbutt:Show()
-nextbutt.RealShow, nextbutt.RealHide, nextbutt.RealEnable, nextbutt.RealDisable = nextbutt.Show, nextbutt.Hide, nextbutt.Enable, nextbutt.Disable
-nextbutt.Show, nextbutt.Hide = noop, noop
-nextbutt:GetRegions():Hide()
+local nextbutt = ns.CreateNextPageButton(panel)
+nextbutt:SetPoint("BOTTOMRIGHT", panel)
+nextbutt:Hide()
+
+local prevbutt, counttext = BrowsePrevPageButton, BrowseSearchCountText
 
 prevbutt:SetParent(panel)
 prevbutt:SetWidth(24) prevbutt:SetHeight(24)
@@ -144,19 +140,15 @@ function ns.Update(self, event)
 	if totalAuctions == 0 then
 		BrowseSearchCountText:Hide()
 		prevbutt:RealHide()
-		nextbutt:RealHide()
 	else
 		BrowseSearchCountText:SetFormattedText(NUMBER_OF_RESULTS_TEMPLATE, itemsMin, itemsMax, totalAuctions)
 		BrowseSearchCountText:Show()
 
 		prevbutt:RealShow()
-		nextbutt:RealShow()
 		if totalAuctions > NUM_AUCTION_ITEMS_PER_PAGE then
 			prevbutt.isEnabled = AuctionFrameBrowse.page ~= 0
-			nextbutt.isEnabled = AuctionFrameBrowse.page ~= (ceil(totalAuctions/NUM_AUCTION_ITEMS_PER_PAGE) - 1)
 		else
 			prevbutt.isEnabled = false
-			nextbutt.isEnabled = false
 		end
 
 		if numBatchAuctions-NUM_ROWS <= 0 then
@@ -171,7 +163,6 @@ function ns.Update(self, event)
 	end
 
 	if AuctionFrameBrowse.page == 0 then prevbutt:RealDisable() else prevbutt:RealEnable() end
-	if AuctionFrameBrowse.page == (math.ceil(totalAuctions/NUM_AUCTION_ITEMS_PER_PAGE) - 1) then nextbutt:RealDisable() else nextbutt:RealEnable() end
 end
 
 panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")

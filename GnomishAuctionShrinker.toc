@@ -39,5 +39,8 @@ frames\auction_unit_buyout.lua
 frames\columns.lua
 frames\header.lua
 frames\header_button.lua
+frames\next_page_button.lua
+
+mixin\pending_query.lua
 
 GnomishAuctionShrinker.lua
