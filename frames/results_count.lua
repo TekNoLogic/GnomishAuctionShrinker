@@ -6,6 +6,7 @@ local count
 local function Update()
 	local num, total = GetNumAuctionItems("list")
 	if total == 0 then return count:Hide() end
+	if num > NUM_AUCTION_ITEMS_PER_PAGE then return count:Hide() end
 
 	local first = AuctionFrameBrowse.page * NUM_AUCTION_ITEMS_PER_PAGE + 1
 	local last = first + num - 1
