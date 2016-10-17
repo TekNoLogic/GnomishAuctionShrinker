@@ -17,7 +17,7 @@ watcher:SetScript("OnUpdate", function(self)
 	if not CanSendAuctionQuery("list") then return end
 
 	for frame in pairs(frames) do
-		if frame.OnQueryComplete then frame:OnQueryComplete() end
+		if frame.OnQueryComplete then frame:OnQueryComplete(all_scan) end
 	end
 	self:Hide()
 end)

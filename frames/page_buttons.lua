@@ -17,6 +17,11 @@ local function OnEvent(self, event)
 end
 
 
+local function OnQuerySent(self)
+	self:Disable()
+end
+
+
 local function OnQueryComplete(self)
 	local num, total = GetNumAuctionItems("list")
 	if total == 0 or num == total then return end
@@ -42,7 +47,7 @@ function ns.CreateAuctionPageButton(parent, type)
 	butt:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
 	ns.MixinPendingQuery(butt)
 
-	butt.OnQuerySent = butt.Disable
+	butt.OnQuerySent = OnQuerySent
 	butt.OnQueryComplete = OnQueryComplete
 
 	return butt
