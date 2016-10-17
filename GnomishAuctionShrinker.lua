@@ -16,13 +16,6 @@ local panel = CreateFrame("Frame", nil, AuctionFrameBrowse)
 panel:SetWidth(605) panel:SetHeight(305)
 panel:SetPoint("TOPLEFT", 188, -103)
 
-
-local bidbutt, buybutt = BrowseBidButton, BrowseBuyoutButton
-
-local scrollbar, upbutt, downbutt = BrowseScrollFrameScrollBar, BrowseScrollFrameScrollBarScrollUpButton, BrowseScrollFrameScrollBarScrollDownButton
-scrollbar.RealSetValue, scrollbar.RealSetMinMaxValues, scrollbar.RealSetValueStep = scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep
-scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep = noop, noop, noop
-
 local nextbutt = ns.CreateAuctionPageButton(panel, "Next")
 nextbutt:SetPoint("BOTTOMRIGHT")
 
@@ -32,12 +25,7 @@ prevbutt:SetPoint("RIGHT", nextbutt, "LEFT")
 local counttext = ns.CreateResultsCount(panel)
 counttext:SetPoint("RIGHT", prevbutt, "LEFT")
 
-
-local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetValue() - value*10) end
-
-
 local columns = ns.CreateColumns(panel)
-
 
 local rows = {}
 for i=1,NUM_ROWS do
@@ -49,6 +37,17 @@ for i=1,NUM_ROWS do
 	else row:SetPoint("TOP", rows[i-1], "BOTTOM") end
 	rows[i] = row
 end
+
+ns.CreateHeader(panel, columns)
+
+
+local bidbutt, buybutt = BrowseBidButton, BrowseBuyoutButton
+
+local scrollbar, upbutt, downbutt = BrowseScrollFrameScrollBar, BrowseScrollFrameScrollBarScrollUpButton, BrowseScrollFrameScrollBarScrollDownButton
+scrollbar.RealSetValue, scrollbar.RealSetMinMaxValues, scrollbar.RealSetValueStep = scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep
+scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep = noop, noop, noop
+
+local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetValue() - value*10) end
 
 
 -----------------------
@@ -158,10 +157,3 @@ scrollbar:SetScript("OnValueChanged", function(self, value, ...)
 end)
 upbutt:SetScript("OnClick", function() scrollbar:RealSetValue(scrollbar:GetValue() - 10); PlaySound("UChatScrollButton") end)
 downbutt:SetScript("OnClick", function() scrollbar:RealSetValue(scrollbar:GetValue() + 10); PlaySound("UChatScrollButton") end)
-
-
------------------------
---      Headers      --
------------------------
-
-ns.CreateHeader(panel, columns)
