@@ -13,7 +13,9 @@ end
 
 local function Update(self)
 	local num, total = GetNumAuctionItems("list")
-	self:SetShown(total > 0 and num < total)
+	if num > NUM_AUCTION_ITEMS_PER_PAGE then return self:Hide() end
+	if total == 0 then return self:Hide() end
+	self:Show()
 end
 
 
