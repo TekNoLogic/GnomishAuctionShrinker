@@ -17,6 +17,7 @@ Hide(BrowseLevelSort)
 Hide(BrowseNextPageButton)
 Hide(BrowsePrevPageButton)
 Hide(BrowseQualitySort)
+Hide(BrowseSearchCountText)
 
 
 -- Disable updates on default panel

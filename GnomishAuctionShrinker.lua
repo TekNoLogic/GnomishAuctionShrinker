@@ -31,12 +31,8 @@ local prevbutt = ns.CreateAuctionPageButton(panel, "Prev")
 prevbutt:SetPoint("RIGHT", nextbutt, "LEFT")
 prevbutt:Hide()
 
-local counttext = BrowseSearchCountText
-counttext:SetParent(panel)
-counttext:ClearAllPoints()
+local counttext = ns.CreateResultsCount(panel)
 counttext:SetPoint("RIGHT", prevbutt, "LEFT")
-counttext:Show()
-counttext.Hide = counttext.Show
 
 
 local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetValue() - value*10) end
@@ -131,12 +127,7 @@ function ns.Update(self, event)
 	local itemsMin = AuctionFrameBrowse.page * NUM_AUCTION_ITEMS_PER_PAGE + 1
 	local itemsMax = itemsMin + numBatchAuctions - 1
 
-	if totalAuctions == 0 then
-		BrowseSearchCountText:Hide()
-	else
-		BrowseSearchCountText:SetFormattedText(NUMBER_OF_RESULTS_TEMPLATE, itemsMin, itemsMax, totalAuctions)
-		BrowseSearchCountText:Show()
-
+	if totalAuctions > 0 then
 		if numBatchAuctions-NUM_ROWS <= 0 then
 			scrollbar:Disable()
 			upbutt:Disable()

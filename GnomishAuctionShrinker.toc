@@ -41,6 +41,7 @@ frames\columns.lua
 frames\header.lua
 frames\header_button.lua
 frames\page_buttons.lua
+frames\results_count.lua
 
 mixin\pending_query.lua
 
