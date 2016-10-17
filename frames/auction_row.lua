@@ -47,6 +47,11 @@ local function OnDisable(self)
 end
 
 
+local function OnQuerySent(self, all_scan)
+	if all_scan then self:Disable() end
+end
+
+
 local function CanBid(index)
 	local bid = ns.GetRequiredBid(index)
 	if bid > MAXIMUM_BID_PRICE then return false end
@@ -137,11 +142,14 @@ function ns.CreateAuctionRow(parent, columns)
 	row:SetScript("OnMouseWheel", OnMouseWheel)
 	row:EnableMouseWheel(true)
 
+	row.OnQuerySent = OnQuerySent
 	row.SetSelected = SetSelected
 	row.SetValue = SetValue
 
 	row:SetHighlightTexture("Interface\\HelpFrame\\HelpFrameButton-Highlight")
 	row:GetHighlightTexture():SetTexCoord(0, 1, 0, 0.578125)
+
+	ns.MixinPendingQuery(row)
 
 	rows[row] = true
 
