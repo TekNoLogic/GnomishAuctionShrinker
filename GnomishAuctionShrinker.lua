@@ -23,11 +23,11 @@ local scrollbar, upbutt, downbutt = BrowseScrollFrameScrollBar, BrowseScrollFram
 scrollbar.RealSetValue, scrollbar.RealSetMinMaxValues, scrollbar.RealSetValueStep = scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep
 scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep = noop, noop, noop
 
-local nextbutt = ns.CreateNextPageButton(panel)
-nextbutt:SetPoint("BOTTOMRIGHT", panel)
+local nextbutt = ns.CreateAuctionPageButton(panel, "Next")
+nextbutt:SetPoint("BOTTOMRIGHT")
 nextbutt:Hide()
 
-local prevbutt = ns.CreatePrevPageButton(panel)
+local prevbutt = ns.CreateAuctionPageButton(panel, "Prev")
 prevbutt:SetPoint("RIGHT", nextbutt, "LEFT")
 prevbutt:Hide()
 

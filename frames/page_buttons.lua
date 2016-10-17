@@ -2,8 +2,11 @@
 local myname, ns = ...
 
 
+local types = {}
 local function OnClick(self)
-	AuctionFrameBrowse.page = AuctionFrameBrowse.page - 1
+	local val = 1
+	if types[self] == "Prev" then val = -1 end
+	AuctionFrameBrowse.page = AuctionFrameBrowse.page + val
 	AuctionFrameBrowse_Search()
 end
 
@@ -16,20 +19,21 @@ end
 
 local function OnQueryComplete(self)
 	local num, total = GetNumAuctionItems("list")
-	local last_page = math.ceil(total/NUM_AUCTION_ITEMS_PER_PAGE) - 1
+	if total == 0 or num == total then return end
+	if total <= NUM_AUCTION_ITEMS_PER_PAGE then return self:Disable() end
 
-	if total > 0 and num < total then
-		if total > NUM_AUCTION_ITEMS_PER_PAGE then
-			self:SetEnabled(AuctionFrameBrowse.page ~= 0)
-		else
-			self:Disable()
-		end
+	local test_value = 0
+	if types[self] == "Next" then
+		test_value =  math.ceil(total/NUM_AUCTION_ITEMS_PER_PAGE) - 1
 	end
+	self:SetEnabled(AuctionFrameBrowse.page ~= test_value)
 end
 
 
-function ns.CreatePrevPageButton(parent)
-	local butt = ns.CreatePageButton(parent, "Next")
+function ns.CreateAuctionPageButton(parent, type)
+	local butt = ns.CreatePageButton(parent, type)
+	types[butt] = type
+
 	butt:SetSize(24, 24)
 
 	butt:SetScript("OnClick", OnClick)
