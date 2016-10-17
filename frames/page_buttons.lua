@@ -11,7 +11,7 @@ local function OnClick(self)
 end
 
 
-local function OnEvent(self, event)
+local function Update(self)
 	local num, total = GetNumAuctionItems("list")
 	self:SetShown(total > 0 and num < total)
 end
@@ -42,7 +42,8 @@ function ns.CreateAuctionPageButton(parent, type)
 	butt:SetSize(24, 24)
 
 	butt:SetScript("OnClick", OnClick)
-	butt:SetScript("OnEvent", OnEvent)
+	butt:SetScript("OnEvent", Update)
+	butt:SetScript("OnShow", Update)
 
 	butt:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
 	ns.MixinPendingQuery(butt)

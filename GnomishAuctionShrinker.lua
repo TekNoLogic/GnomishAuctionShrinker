@@ -25,11 +25,9 @@ scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep = noop, no
 
 local nextbutt = ns.CreateAuctionPageButton(panel, "Next")
 nextbutt:SetPoint("BOTTOMRIGHT")
-nextbutt:Hide()
 
 local prevbutt = ns.CreateAuctionPageButton(panel, "Prev")
 prevbutt:SetPoint("RIGHT", nextbutt, "LEFT")
-prevbutt:Hide()
 
 local counttext = ns.CreateResultsCount(panel)
 counttext:SetPoint("RIGHT", prevbutt, "LEFT")
