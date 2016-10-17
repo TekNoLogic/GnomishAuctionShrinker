@@ -27,17 +27,11 @@ local nextbutt = ns.CreateNextPageButton(panel)
 nextbutt:SetPoint("BOTTOMRIGHT", panel)
 nextbutt:Hide()
 
-local prevbutt, counttext = BrowsePrevPageButton, BrowseSearchCountText
-
-prevbutt:SetParent(panel)
-prevbutt:SetWidth(24) prevbutt:SetHeight(24)
-prevbutt:ClearAllPoints()
+local prevbutt = ns.CreatePrevPageButton(panel)
 prevbutt:SetPoint("RIGHT", nextbutt, "LEFT")
-prevbutt:Show()
-prevbutt.RealShow, prevbutt.RealHide, prevbutt.RealEnable, prevbutt.RealDisable = prevbutt.Show, prevbutt.Hide, prevbutt.Enable, prevbutt.Disable
-prevbutt.Show, prevbutt.Hide = noop, noop
-prevbutt:GetRegions():Hide()
+prevbutt:Hide()
 
+local counttext = BrowseSearchCountText
 counttext:SetParent(panel)
 counttext:ClearAllPoints()
 counttext:SetPoint("RIGHT", prevbutt, "LEFT")
@@ -139,17 +133,9 @@ function ns.Update(self, event)
 
 	if totalAuctions == 0 then
 		BrowseSearchCountText:Hide()
-		prevbutt:RealHide()
 	else
 		BrowseSearchCountText:SetFormattedText(NUMBER_OF_RESULTS_TEMPLATE, itemsMin, itemsMax, totalAuctions)
 		BrowseSearchCountText:Show()
-
-		prevbutt:RealShow()
-		if totalAuctions > NUM_AUCTION_ITEMS_PER_PAGE then
-			prevbutt.isEnabled = AuctionFrameBrowse.page ~= 0
-		else
-			prevbutt.isEnabled = false
-		end
 
 		if numBatchAuctions-NUM_ROWS <= 0 then
 			scrollbar:Disable()
@@ -161,8 +147,6 @@ function ns.Update(self, event)
 			scrollbar:RealSetValueStep(1)
 		end
 	end
-
-	if AuctionFrameBrowse.page == 0 then prevbutt:RealDisable() else prevbutt:RealEnable() end
 end
 
 panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")

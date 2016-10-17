@@ -15,6 +15,7 @@ Hide(BrowseDurationSort)
 Hide(BrowseHighBidderSort)
 Hide(BrowseLevelSort)
 Hide(BrowseNextPageButton)
+Hide(BrowsePrevPageButton)
 Hide(BrowseQualitySort)
 
 
