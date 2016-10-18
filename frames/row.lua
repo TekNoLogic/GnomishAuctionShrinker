@@ -40,8 +40,7 @@ end
 
 
 local children = {}
-local function OnDisable(self)
-	for frame in pairs(children[self]) do frame:SetValue() end
+local function OnHide(self)
 	self.index = nil
 end
 
@@ -86,18 +85,19 @@ end
 
 
 local function SetValue(self, index)
+	if not index then return self:Hide() end
+
 	self.index = index
-	if not index then return self:Disable() end
+	for frame in pairs(children[self]) do frame:SetValue(index) end
 
 	local name = GetAuctionItemInfo("list", index)
 	local item_id = ns.GetAuctionItemID(index)
 
-	if not (name and item_id) then return self:Disable() end
+	if not (name and item_id) then return self:Hide() end
 
 	self:Enable()
-
-	for frame in pairs(children[self]) do frame:SetValue(index) end
 	RefreshSelected(self)
+	self:Show()
 end
 
 
@@ -115,7 +115,7 @@ function ns.CreateAuctionRow(parent, columns)
 
 	row:SetHeight(ROW_HEIGHT)
 	row:SetScript("OnClick", OnClick)
-	row:SetScript("OnDisable", OnDisable)
+	row:SetScript("OnHide", OnHide)
 	row:SetScript("OnMouseWheel", OnMouseWheel)
 	row:EnableMouseWheel(true)
 
