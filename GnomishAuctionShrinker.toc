@@ -25,23 +25,23 @@ services\get_required_bid.lua
 services\hide_default_ui.lua
 services\sort_auctions.lua
 
-frames\auction_bid.lua
-frames\auction_buyout.lua
-frames\auction_icon.lua
-frames\auction_item.lua
-frames\auction_ilevel.lua
-frames\auction_name.lua
-frames\auction_qty.lua
-frames\auction_required_level.lua
-frames\auction_row.lua
-frames\auction_seller.lua
-frames\auction_time_left.lua
-frames\auction_unit_buyout.lua
 frames\columns.lua
 frames\header.lua
 frames\header_button.lua
 frames\page_buttons.lua
 frames\results_count.lua
+frames\row.lua
+frames\row\bid.lua
+frames\row\buyout.lua
+frames\row\icon.lua
+frames\row\item.lua
+frames\row\ilevel.lua
+frames\row\name.lua
+frames\row\qty.lua
+frames\row\required_level.lua
+frames\row\seller.lua
+frames\row\time_left.lua
+frames\row\unit_buyout.lua
 
 mixin\pending_query.lua
 
