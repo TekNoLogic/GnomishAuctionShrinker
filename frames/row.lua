@@ -64,23 +64,21 @@ local function CanBid(index)
 end
 
 
-local selected_index
-local rows = {}
-local function RefreshSelected(self)
-	if selected_index ~= self.index then return self:UnlockHighlight() end
-
-	self:LockHighlight()
-
-	-- Set bid
-	MoneyInputFrame_SetCopper(BrowseBidPrice, ns.GetRequiredBid(self.index))
-	if CanBid(self.index) then bidbutt:Enable() end
+local function OnSelectionChanged(self, message, index)
+	if index and index == self.index then
+		self:LockHighlight()
+	else
+		self:UnlockHighlight()
+	end
 end
 
 
 local function SetSelected(self)
-	selected_index = self.index
 	SetSelectedAuctionItem("list", self.index)
-	for frame in pairs(rows) do RefreshSelected(frame) end
+
+	-- Set bid
+	MoneyInputFrame_SetCopper(BrowseBidPrice, ns.GetRequiredBid(self.index))
+	if CanBid(self.index) then bidbutt:Enable() end
 end
 
 
@@ -95,8 +93,8 @@ local function SetValue(self, index)
 
 	if not (name and item_id) then return self:Hide() end
 
+	OnSelectionChanged(self, nil, ns.GetSelectedAuction())
 	self:Enable()
-	RefreshSelected(self)
 	self:Show()
 end
 
@@ -126,8 +124,7 @@ function ns.CreateAuctionRow(parent, columns)
 	row:GetHighlightTexture():SetTexCoord(0, 1, 0, 0.578125)
 
 	ns.RegisterCallback(row, "AUCTION_QUERY_SENT", OnQuerySent)
-
-	rows[row] = true
+	ns.RegisterCallback(row, "SELECTION_CHANGED", OnSelectionChanged)
 
 	local kids = {}
 	children[row] = kids
