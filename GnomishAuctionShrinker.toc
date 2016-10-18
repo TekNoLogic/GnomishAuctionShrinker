@@ -20,12 +20,16 @@ externals\ui-about.lua
 externals\ui-column-header.lua
 externals\ui-page-button.lua
 
+services\can_buyout.lua
 services\get_auction_item_id.lua
 services\get_buyout.lua
 services\get_required_bid.lua
 services\hide_default_ui.lua
+services\pending_query.lua
+services\selected_auction.lua
 services\sort_auctions.lua
 
+frames\buyout_button.lua
 frames\columns.lua
 frames\header.lua
 frames\header_button.lua
@@ -43,7 +47,5 @@ frames\row\required_level.lua
 frames\row\seller.lua
 frames\row\time_left.lua
 frames\row\unit_buyout.lua
-
-mixin\pending_query.lua
 
 GnomishAuctionShrinker.lua
