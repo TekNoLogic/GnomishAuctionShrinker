@@ -21,6 +21,7 @@ externals\ui-column-header.lua
 externals\ui-page-button.lua
 
 services\can_buyout.lua
+services\dialog_shown.lua
 services\get_auction_item_id.lua
 services\get_buyout.lua
 services\get_required_bid.lua
@@ -29,6 +30,7 @@ services\pending_query.lua
 services\selected_auction.lua
 services\sort_auctions.lua
 
+frames\bid_button.lua
 frames\buyout_button.lua
 frames\columns.lua
 frames\header.lua

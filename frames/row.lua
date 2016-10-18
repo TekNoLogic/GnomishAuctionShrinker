@@ -6,8 +6,6 @@ local BUYOUT_LIMIT = 800 * 100 * 100 -- 800g
 local PADDING = 2
 
 
-local bidbutt = BrowseBidButton
-
 local function OnClick(self)
 	if IsAltKeyDown() then
 		self:SetSelected()
@@ -43,20 +41,6 @@ local function OnQuerySent(self, all_scan)
 end
 
 
-local function CanBid(index)
-	local bid = ns.GetRequiredBid(index)
-	if bid > MAXIMUM_BID_PRICE then return false end
-
-	local _, _, _, _, _, _, _, _, _, _, _, is_high_bidder, _, seller =
-		GetAuctionItemInfo("list", index)
-	if is_high_bidder then return false end
-	if seller == UnitName("player") then return false end
-	if GetMoney() < bid then return false end
-
-	return true
-end
-
-
 local function OnSelectionChanged(self, message, index)
 	if index and index == self.index then
 		self:LockHighlight()
@@ -68,10 +52,6 @@ end
 
 local function SetSelected(self)
 	SetSelectedAuctionItem("list", self.index)
-
-	-- Set bid
-	MoneyInputFrame_SetCopper(BrowseBidPrice, ns.GetRequiredBid(self.index))
-	if CanBid(self.index) then bidbutt:Enable() end
 end
 
 

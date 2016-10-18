@@ -41,8 +41,6 @@ end
 ns.CreateHeader(panel, columns)
 
 
-local bidbutt = BrowseBidButton
-
 local scrollbar, upbutt, downbutt = BrowseScrollFrameScrollBar, BrowseScrollFrameScrollBarScrollUpButton, BrowseScrollFrameScrollBarScrollDownButton
 scrollbar.RealSetValue, scrollbar.RealSetMinMaxValues, scrollbar.RealSetValueStep = scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep
 scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep = noop, noop, noop
@@ -97,7 +95,6 @@ local offset = 0
 function ns.Update(self, event)
 	local selected = GetSelectedAuctionItem("list")
 	AuctionFrame.buyoutPrice = nil
-	bidbutt:Disable()
 
 	local numBatchAuctions, totalAuctions = GetNumAuctionItems("list")
 

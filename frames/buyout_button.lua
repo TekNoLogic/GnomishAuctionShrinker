@@ -3,17 +3,11 @@ local myname, ns = ...
 
 
 local butt = BrowseBuyoutButton
-local function OnShow(self)
-	local self = self:GetParent()
-	if self.which == "BUYOUT_AUCTION" and self:IsShown() then
-		butt:Disable()
-	end
-end
 
 
-for i=1,STATICPOPUP_NUMDIALOGS do
-	_G["StaticPopup"..i]:HookScript("OnShow", OnShow)
-end
+ns.RegisterCallback(butt, "DIALOG_SHOWN", function(self)
+	self:Disable()
+end)
 
 
 ns.RegisterCallback(butt, "SELECTION_CHANGED", function(self, message, index)
