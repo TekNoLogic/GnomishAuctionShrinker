@@ -17,5 +17,11 @@ end
 
 ns.RegisterCallback(BrowseBuyoutButton, "SELECTION_CHANGED", function(self, message, index)
 	if not index then return self:Disable() end
-	self:SetEnabled(ns.CanBuyout(index))
+
+	if ns.CanBuyout(index) then
+		self:Enable()
+		AuctionFrame.buyoutPrice = ns.GetBuyout(index)
+	else
+		self:Disable()
+	end
 end)

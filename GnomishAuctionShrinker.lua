@@ -41,7 +41,7 @@ end
 ns.CreateHeader(panel, columns)
 
 
-local bidbutt, buybutt = BrowseBidButton, BrowseBuyoutButton
+local bidbutt = BrowseBidButton
 
 local scrollbar, upbutt, downbutt = BrowseScrollFrameScrollBar, BrowseScrollFrameScrollBarScrollUpButton, BrowseScrollFrameScrollBarScrollDownButton
 scrollbar.RealSetValue, scrollbar.RealSetMinMaxValues, scrollbar.RealSetValueStep = scrollbar.SetValue, scrollbar.SetMinMaxValues, scrollbar.SetValueStep

@@ -75,11 +75,6 @@ local function RefreshSelected(self)
 	-- Set bid
 	MoneyInputFrame_SetCopper(BrowseBidPrice, ns.GetRequiredBid(self.index))
 	if CanBid(self.index) then bidbutt:Enable() end
-
-	if ns.CanBuyout(self.index) then
-		local buyout = ns.GetBuyout(self.index)
-		AuctionFrame.buyoutPrice = buyout
-	end
 end
 
 
