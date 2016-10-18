@@ -1,7 +1,7 @@
 
 local myname, ns = ...
 
-local BUYOUT_LIMIT = 800 * 100 * 100 -- 800g
+
 local NUM_ROWS, BOTTOM_GAP = 14, 25
 local ROW_HEIGHT = math.floor((305-BOTTOM_GAP)/NUM_ROWS)
 local TEXT_GAP = 4

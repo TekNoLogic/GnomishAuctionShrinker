@@ -3,17 +3,11 @@ local myname, ns = ...
 
 
 local BUYOUT_LIMIT = 800 * 100 * 100 -- 800g
-local NUM_ROWS, BOTTOM_GAP = 14, 25
-local ROW_HEIGHT = math.floor((305-BOTTOM_GAP)/NUM_ROWS)
-local TEXT_GAP = 4
+local PADDING = 2
 
 
 local bidbutt = BrowseBidButton
 
-local scrollbar = BrowseScrollFrameScrollBar
-
-local Update
-local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetValue() - value*10) end
 local function OnClick(self)
 	if IsAltKeyDown() then
 		self:SetSelected()
@@ -39,7 +33,6 @@ local function OnClick(self)
 end
 
 
-local children = {}
 local function OnHide(self)
 	self.index = nil
 end
@@ -82,6 +75,7 @@ local function SetSelected(self)
 end
 
 
+local children = {}
 local function SetValue(self, index)
 	if not index then return self:Hide() end
 
@@ -102,8 +96,8 @@ end
 local function AnchorCell(cell, column, row)
 	cell:SetPoint("TOP", row)
 	cell:SetPoint("BOTTOM", row)
-	cell:SetPoint("LEFT", column, TEXT_GAP/2, 0)
-	cell:SetPoint("RIGHT", column, -TEXT_GAP/2, 0)
+	cell:SetPoint("LEFT", column, PADDING, 0)
+	cell:SetPoint("RIGHT", column, -PADDING, 0)
 end
 
 
@@ -111,11 +105,8 @@ function ns.CreateAuctionRow(parent, columns)
 	local row = CreateFrame("Button", nil, parent)
 	row:Disable()
 
-	row:SetHeight(ROW_HEIGHT)
 	row:SetScript("OnClick", OnClick)
 	row:SetScript("OnHide", OnHide)
-	row:SetScript("OnMouseWheel", OnMouseWheel)
-	row:EnableMouseWheel(true)
 
 	row.SetSelected = SetSelected
 	row.SetValue = SetValue
