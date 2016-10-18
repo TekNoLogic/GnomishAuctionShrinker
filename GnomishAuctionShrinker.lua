@@ -138,6 +138,15 @@ panel:SetScript("OnEvent", ns.Update)
 panel:SetScript("OnShow", ns.Update)
 
 
+ns.RegisterCallback(panel, "AUCTION_QUERY_SENT", function(self, message, all_scan)
+	if all_scan then
+		self:UnregisterEvent("AUCTION_ITEM_LIST_UPDATE")
+	else
+		self:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
+	end
+end)
+
+
 -------------------------
 --      Scrolling      --
 -------------------------
