@@ -15,6 +15,7 @@
 externals\events.lua
 externals\item_colors.lua
 externals\gsc.lua
+externals\messages.lua
 externals\ui-about.lua
 externals\ui-column-header.lua
 externals\ui-page-button.lua

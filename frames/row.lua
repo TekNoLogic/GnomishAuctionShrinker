@@ -142,14 +142,13 @@ function ns.CreateAuctionRow(parent, columns)
 	row:SetScript("OnMouseWheel", OnMouseWheel)
 	row:EnableMouseWheel(true)
 
-	row.OnQuerySent = OnQuerySent
 	row.SetSelected = SetSelected
 	row.SetValue = SetValue
 
 	row:SetHighlightTexture("Interface\\HelpFrame\\HelpFrameButton-Highlight")
 	row:GetHighlightTexture():SetTexCoord(0, 1, 0, 0.578125)
 
-	ns.MixinPendingQuery(row)
+	ns.RegisterCallback(row, "AUCTION_QUERY_SENT", OnQuerySent)
 
 	rows[row] = true
 

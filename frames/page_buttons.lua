@@ -48,10 +48,9 @@ function ns.CreateAuctionPageButton(parent, type)
 	butt:SetScript("OnShow", Update)
 
 	butt:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
-	ns.MixinPendingQuery(butt)
 
-	butt.OnQuerySent = OnQuerySent
-	butt.OnQueryComplete = OnQueryComplete
+	ns.RegisterCallback(butt, "AUCTION_QUERY_SENT", OnQuerySent)
+	ns.RegisterCallback(butt, "AUCTION_QUERY_COMPLETE", OnQueryComplete)
 
 	return butt
 end

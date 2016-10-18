@@ -45,14 +45,13 @@ function ns.CreateHeaderButton(parent, text, column)
 
 	butt:SetText(text)
 
-	butt.OnQuerySent = OnQuerySent
-	butt.OnQueryComplete = OnQueryComplete
 	butt.UpdateArrow = UpdateArrow
 
 	butt:SetScript("OnClick", OnClick)
 	butt:SetScript("OnShow", OnShow)
 
-	ns.MixinPendingQuery(butt)
+	ns.RegisterCallback(butt, "AUCTION_QUERY_SENT", OnQuerySent)
+	ns.RegisterCallback(butt, "AUCTION_QUERY_COMPLETE", OnQueryComplete)
 
 	butt:UpdateArrow()
 
