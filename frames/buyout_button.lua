@@ -2,10 +2,11 @@
 local myname, ns = ...
 
 
+local butt = BrowseBuyoutButton
 local function OnShow(self)
 	local self = self:GetParent()
 	if self.which == "BUYOUT_AUCTION" and self:IsShown() then
-		BrowseBuyoutButton:Disable()
+		butt:Disable()
 	end
 end
 
@@ -15,7 +16,7 @@ for i=1,STATICPOPUP_NUMDIALOGS do
 end
 
 
-ns.RegisterCallback(BrowseBuyoutButton, "SELECTION_CHANGED", function(self, message, index)
+ns.RegisterCallback(butt, "SELECTION_CHANGED", function(self, message, index)
 	if not index then return self:Disable() end
 
 	if ns.CanBuyout(index) then
