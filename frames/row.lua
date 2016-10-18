@@ -8,7 +8,7 @@ local ROW_HEIGHT = math.floor((305-BOTTOM_GAP)/NUM_ROWS)
 local TEXT_GAP = 4
 
 
-local bidbutt, buybutt = BrowseBidButton, BrowseBuyoutButton
+local bidbutt = BrowseBidButton
 
 local scrollbar = BrowseScrollFrameScrollBar
 
@@ -22,7 +22,6 @@ local function OnClick(self)
 		if buyout > BUYOUT_LIMIT then
 			AuctionFrame.buyoutPrice = buyout
 			StaticPopup_Show("BUYOUT_AUCTION")
-			BrowseBuyoutButton:Disable()
 			return
 		end
 
@@ -66,22 +65,6 @@ local function CanBid(index)
 end
 
 
-local function CanBuyout(index)
-	local buyout = ns.GetBuyout(index)
-	if buyout == 0 then return false end
-	if GetMoney() < buyout then return false end
-
-	local bid = ns.GetRequiredBid(index)
-	if bid > buyout then return false end
-
-	local _, _, _, _, _, _, _, _, _, _, high_bid, is_high_bidder =
-		GetAuctionItemInfo("list", index)
-	if is_high_bidder and (GetMoney() + high_bid) < buyout then return false end
-
-	return true
-end
-
-
 local selected_index
 local rows = {}
 local function RefreshSelected(self)
@@ -93,10 +76,9 @@ local function RefreshSelected(self)
 	MoneyInputFrame_SetCopper(BrowseBidPrice, ns.GetRequiredBid(self.index))
 	if CanBid(self.index) then bidbutt:Enable() end
 
-	if CanBuyout(self.index) then
+	if ns.CanBuyout(self.index) then
 		local buyout = ns.GetBuyout(self.index)
 		AuctionFrame.buyoutPrice = buyout
-		buybutt:Enable()
 	end
 end
 

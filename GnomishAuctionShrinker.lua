@@ -98,7 +98,6 @@ function ns.Update(self, event)
 	local selected = GetSelectedAuctionItem("list")
 	AuctionFrame.buyoutPrice = nil
 	bidbutt:Disable()
-	buybutt:Disable()
 
 	local numBatchAuctions, totalAuctions = GetNumAuctionItems("list")
 
