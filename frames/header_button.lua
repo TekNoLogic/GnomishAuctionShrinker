@@ -33,7 +33,7 @@ local function OnQuerySent(self)
 end
 
 
-local function OnQueryComplete(self, all_scan)
+local function OnQueryComplete(self, message, all_scan)
 	if all_scan then return end
 	self:Enable()
 end
