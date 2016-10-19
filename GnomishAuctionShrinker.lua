@@ -52,73 +52,27 @@ local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetVal
 --      Updater      --
 -----------------------
 
-ns.sortbyunit = true
-ns.sortbyilvl = false
-ns.sorttable = {}
-local orig, wipe = QueryAuctionItems, wipe
+local orig = QueryAuctionItems
 function QueryAuctionItems(...)
-	if select(10, ...) then ns.sortbyunit, ns.sortbyilvl = false, false end
-	wipe(ns.sorttable)
 	scrollbar:RealSetValue(0)
 	return orig(...)
 end
 
-local function UnitSort(a,b)
-	local _, _, counta, _, _, _, _, _, _, buyouta = GetAuctionItemInfo("list", a)
-	local _, _, countb, _, _, _, _, _, _, buyoutb = GetAuctionItemInfo("list", b)
-	if not buyouta then return false end
-	if not buyoutb then return true end
-	return buyouta/counta < buyoutb/countb
-end
-
-local function iLvlSort(a,b)
-	if not a or not b then return false end
-	if not b then return true end
-
-	local linka = GetAuctionItemLink("list", a)
-	if not linka then return false end
-	local _, _, _, iLevela = GetItemInfo(linka)
-
-	local linkb = GetAuctionItemLink("list", b)
-	if not linkb then return true end
-	local _, _, _, iLevelb = GetItemInfo(linkb)
-
-	if iLevela == iLevelb then return UnitSort(a,b) end
-	if ns.sortbyilvl == 1 then
-		return (iLevela or 0) < (iLevelb or 0)
-	else
-		return (iLevela or 0) > (iLevelb or 0)
-	end
-end
 
 local offset = 0
-function ns.Update(self, event)
+function ns.Update()
 	local selected = GetSelectedAuctionItem("list")
 	AuctionFrame.buyoutPrice = nil
 
 	local numBatchAuctions, totalAuctions = GetNumAuctionItems("list")
 
-	if event == "AUCTION_ITEM_LIST_UPDATE" then
-		wipe(ns.sorttable)
-		AuctionFrameBrowse.isSearching = nil
-		BrowseNoResultsText:SetText(BROWSE_NO_RESULTS)
-	end
-
 	BrowseNoResultsText:SetShown(numBatchAuctions == 0)
 
-	if (ns.sortbyunit or ns.sortbyilvl) and not next(ns.sorttable) then
-		for i=1,numBatchAuctions do table.insert(ns.sorttable, i) end
-		table.sort(ns.sorttable, ns.sortbyunit and UnitSort or iLvlSort)
-	end
-
+	local sorted = ns.GetSortedResults()
 	for i,row in ipairs(rows) do
-		local index = (ns.sortbyunit or ns.sortbyilvl) and ns.sorttable[offset + i] or
-		              (offset + i)
+		local index = sorted and sorted[offset + i] or (offset + i)
 		row:SetValue(index)
 	end
-
-	local itemsMin = AuctionFrameBrowse.page * NUM_AUCTION_ITEMS_PER_PAGE + 1
-	local itemsMax = itemsMin + numBatchAuctions - 1
 
 	if totalAuctions > 0 then
 		if numBatchAuctions-NUM_ROWS <= 0 then
@@ -133,8 +87,16 @@ function ns.Update(self, event)
 	end
 end
 
+
+panel:SetScript("OnEvent", function()
+	ns.MarkSortDirty()
+	AuctionFrameBrowse.isSearching = nil
+	BrowseNoResultsText:SetText(BROWSE_NO_RESULTS)
+	ns.Update()
+end)
 panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
-panel:SetScript("OnEvent", ns.Update)
+
+
 panel:SetScript("OnShow", ns.Update)
 
 
