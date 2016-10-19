@@ -12,6 +12,7 @@ end
 
 
 function ns.SendMessage(message, ...)
+	assert(message, "`message` must not be nil")
 	if not callbacks[message] then return end
 
 	for context,func in pairs(callbacks[message]) do
