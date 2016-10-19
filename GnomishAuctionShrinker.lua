@@ -100,6 +100,7 @@ panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
 panel:SetScript("OnShow", ns.Update)
 
 
+ns.RegisterCallback(panel, "ANCILLARY_SORT_CHANGED", ns.Update)
 ns.RegisterCallback(panel, "AUCTION_QUERY_SENT", function(self, message, all_scan)
 	if all_scan then
 		self:UnregisterEvent("AUCTION_ITEM_LIST_UPDATE")

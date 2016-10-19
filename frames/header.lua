@@ -35,10 +35,13 @@ function ns.CreateHeader(parent, columns)
 
 	function ilvlsort:UpdateArrow()
 		local sort
-		if ns.sortbyilvl == -1 then sort = "DESC" end
-		if ns.sortbyilvl == 1 then sort = "ASC" end
+		local sortbyilvl = ns.GetItemlevelSort()
+		if sortbyilvl == -1 then sort = "DESC" end
+		if sortbyilvl == 1 then sort = "ASC" end
 		self:SetSort(sort)
 	end
+	ns.RegisterCallback(ilvlsort, "ANCILLARY_SORT_CHANGED", ilvlsort.UpdateArrow)
+	ilvlsort:SetScript("OnClick", ns.ToggleItemlevelSort)
 
 
 	local sellersort = ns.CreateHeaderButton(header, "Seller", "seller")
@@ -61,47 +64,12 @@ function ns.CreateHeader(parent, columns)
 	AnchorSort(unitsort, columns[8], header)
 
 	function unitsort:UpdateArrow()
-		self:SetSort(ns.sortbyunit and "ASC")
+		self:SetSort(ns.GetUnitPriceSort() and "ASC")
 	end
+	ns.RegisterCallback(unitsort, "ANCILLARY_SORT_CHANGED", unitsort.UpdateArrow)
+	unitsort:SetScript("OnClick", ns.ToggleUnitPriceSort)
 
 
 	local qtysort = ns.CreateHeaderButton(header, "#", "quantity")
 	AnchorSort(qtysort, columns[9], header)
-
-
-	ns.CreateHeaderButton = nil
-
-
-	ilvlsort:SetScript("OnClick", function(self)
-		-- Failsafe, don't let sorting be enabled when we have done an all-scan
-		if GetNumAuctionItems("list") > 100 then return end
-
-		if ns.sortbyilvl == 1 then
-			ns.sortbyilvl = -1
-			ns.sortbyunit = false
-		elseif ns.sortbyilvl == false then
-			ns.sortbyilvl = 1
-			ns.sortbyunit = false
-		else
-			ns.sortbyilvl = false
-		end
-
-		self:UpdateArrow()
-		unitsort:UpdateArrow()
-		wipe(ns.sorttable)
-		ns.Update()
-	end)
-
-	unitsort:SetScript("OnClick", function(self)
-		-- Failsafe, don't let sorting be enabled when we have done an all-scan
-		if GetNumAuctionItems("list") > 100 then return end
-
-		ns.sortbyunit = not ns.sortbyunit
-		if ns.sortbyunit then ns.sortbyilvl = false end
-
-		self:UpdateArrow()
-		ilvlsort:UpdateArrow()
-		wipe(ns.sorttable)
-		ns.Update()
-	end)
 end

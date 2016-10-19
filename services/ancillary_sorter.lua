@@ -2,11 +2,9 @@
 local myname, ns = ...
 
 
-ns.sortbyunit = true
-ns.sortbyilvl = false
-
-
 local dirty = false
+local sortbyunit = true
+local sortbyilvl = false
 local sorttable = {}
 
 
@@ -32,7 +30,7 @@ local function ItemlevelSorter(a,b)
 	local _, _, _, iLevelb = GetItemInfo(linkb)
 
 	if iLevela == iLevelb then return UnitSort(a,b) end
-	if ns.sortbyilvl == 1 then
+	if sortbyilvl == 1 then
 		return (iLevela or 0) < (iLevelb or 0)
 	else
 		return (iLevela or 0) > (iLevelb or 0)
@@ -53,18 +51,61 @@ local function FetchSortedList(sorter)
 end
 
 
+function ns.GetUnitPriceSort()
+	return sortbyunit
+end
+
+
+function ns.GetItemlevelSort()
+	return sortbyilvl
+end
+
+
+function ns.ToggleUnitPriceSort()
+	-- Failsafe, don't let sorting be enabled when we have done an all-scan
+	if GetNumAuctionItems("list") > 100 then return end
+
+	sortbyunit = not sortbyunit
+	if sortbyunit then sortbyilvl = false end
+
+	dirty = true
+
+	ns.SendMessage("ANCILLARY_SORT_CHANGED")
+end
+
+
+function ns.ToggleItemlevelSort()
+	-- Failsafe, don't let sorting be enabled when we have done an all-scan
+	if GetNumAuctionItems("list") > 100 then return end
+
+	if sortbyilvl == 1 then
+		sortbyilvl = -1
+		sortbyunit = false
+	elseif sortbyilvl == false then
+		sortbyilvl = 1
+		sortbyunit = false
+	else
+		sortbyilvl = false
+	end
+
+	dirty = true
+
+	ns.SendMessage("ANCILLARY_SORT_CHANGED")
+end
+
+
 function ns.MarkSortDirty()
 	dirty = true
 end
 
 
 function ns.GetSortedResults()
-	if ns.sortbyunit then return FetchSortedList(UnitPriceSorter) end
-	if ns.sortbyilvl then return FetchSortedList(ItemlevelSorter) end
+	if sortbyunit then return FetchSortedList(UnitPriceSorter) end
+	if sortbyilvl then return FetchSortedList(ItemlevelSorter) end
 end
 
 
 ns.RegisterCallback(panel, "AUCTION_QUERY_SENT", function(self, message, all_scan)
-	if all_scan then ns.sortbyunit, ns.sortbyilvl = false, false end
+	if all_scan then sortbyunit, sortbyilvl = false, false end
 	dirty = true
 end)
