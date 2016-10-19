@@ -50,5 +50,6 @@ frames\row\required_level.lua
 frames\row\seller.lua
 frames\row\time_left.lua
 frames\row\unit_buyout.lua
+frames\scroll_frame.lua
 
 GnomishAuctionShrinker.lua

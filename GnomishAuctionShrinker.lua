@@ -2,9 +2,7 @@
 local myname, ns = ...
 
 
-local NUM_ROWS, BOTTOM_GAP = 14, 25
-local ROW_HEIGHT = math.floor((305-BOTTOM_GAP)/NUM_ROWS)
-local TEXT_GAP = 4
+local NUM_ROWS = 14
 local noop = function() end
 
 
@@ -26,17 +24,7 @@ local counttext = ns.CreateResultsCount(panel)
 counttext:SetPoint("RIGHT", prevbutt, "LEFT")
 
 local columns = ns.CreateColumns(panel)
-
-local rows = {}
-for i=1,NUM_ROWS do
-	local row = ns.CreateAuctionRow(panel, columns)
-	row:SetHeight(ROW_HEIGHT)
-	row:SetPoint("LEFT")
-	row:SetPoint("RIGHT")
-	if i == 1 then row:SetPoint("TOP")
-	else row:SetPoint("TOP", rows[i-1], "BOTTOM") end
-	rows[i] = row
-end
+local scrollframe = ns.CreateScrollFrame(panel, columns)
 
 ns.CreateHeader(panel, columns)
 
@@ -52,56 +40,36 @@ local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetVal
 --      Updater      --
 -----------------------
 
-local orig = QueryAuctionItems
-function QueryAuctionItems(...)
-	scrollbar:RealSetValue(0)
-	return orig(...)
-end
+local function OnShow()
+	local num, total = GetNumAuctionItems("list")
 
+	BrowseNoResultsText:SetShown(num == 0)
 
-local offset = 0
-function ns.Update()
-	local selected = GetSelectedAuctionItem("list")
-	AuctionFrame.buyoutPrice = nil
-
-	local numBatchAuctions, totalAuctions = GetNumAuctionItems("list")
-
-	BrowseNoResultsText:SetShown(numBatchAuctions == 0)
-
-	local sorted = ns.GetSortedResults()
-	for i,row in ipairs(rows) do
-		local index = sorted and sorted[offset + i] or (offset + i)
-		row:SetValue(index)
-	end
-
-	if totalAuctions > 0 then
-		if numBatchAuctions-NUM_ROWS <= 0 then
+	if total > 0 then
+		if num-NUM_ROWS <= 0 then
 			scrollbar:Disable()
 			upbutt:Disable()
 			downbutt:Disable()
 		else
 			scrollbar:Enable()
-			scrollbar:RealSetMinMaxValues(0, numBatchAuctions-NUM_ROWS)
+			scrollbar:RealSetMinMaxValues(0, num-NUM_ROWS)
 			scrollbar:RealSetValueStep(1)
 		end
 	end
 end
 
 
+panel:SetScript("OnShow", OnShow)
 panel:SetScript("OnEvent", function()
-	ns.MarkSortDirty()
 	AuctionFrameBrowse.isSearching = nil
 	BrowseNoResultsText:SetText(BROWSE_NO_RESULTS)
-	ns.Update()
 end)
 panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
 
 
-panel:SetScript("OnShow", ns.Update)
-
-
-ns.RegisterCallback(panel, "ANCILLARY_SORT_CHANGED", ns.Update)
 ns.RegisterCallback(panel, "AUCTION_QUERY_SENT", function(self, message, all_scan)
+	AuctionFrame.buyoutPrice = nil
+
 	if all_scan then
 		self:UnregisterEvent("AUCTION_ITEM_LIST_UPDATE")
 	else
@@ -117,11 +85,14 @@ end)
 panel:SetScript("OnMouseWheel", OnMouseWheel)
 panel:EnableMouseWheel(true)
 scrollbar:SetScript("OnValueChanged", function(self, value, ...)
-	offset = value
 	local min, max = self:GetMinMaxValues()
 	if value == min then upbutt:Disable() else upbutt:Enable() end
 	if value == max then downbutt:Disable() else downbutt:Enable() end
-	ns.Update()
+	scrollframe:SetOffset(value)
 end)
 upbutt:SetScript("OnClick", function() scrollbar:RealSetValue(scrollbar:GetValue() - 10); PlaySound("UChatScrollButton") end)
 downbutt:SetScript("OnClick", function() scrollbar:RealSetValue(scrollbar:GetValue() + 10); PlaySound("UChatScrollButton") end)
+
+ns.RegisterCallback(scrollbar, "AUCTION_QUERY_SENT", function(self)
+	self:RealSetValue(0)
+end)
