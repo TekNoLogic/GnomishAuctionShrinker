@@ -40,11 +40,15 @@ local function OnMouseWheel(self, value) scrollbar:RealSetValue(scrollbar:GetVal
 --      Updater      --
 -----------------------
 
+local function UpdateResultText()
+	BrowseNoResultsText:SetShown(GetNumAuctionItems("list") == 0)
+end
+
+
 local function OnShow()
+	UpdateResultText()
+
 	local num, total = GetNumAuctionItems("list")
-
-	BrowseNoResultsText:SetShown(num == 0)
-
 	if total > 0 then
 		if num-NUM_ROWS <= 0 then
 			scrollbar:Disable()
@@ -60,21 +64,16 @@ end
 
 
 panel:SetScript("OnShow", OnShow)
-panel:SetScript("OnEvent", function()
+
+
+ns.RegisterCallback(panel, "AUCTION_ITEM_LIST_UPDATE", function()
 	AuctionFrameBrowse.isSearching = nil
 	BrowseNoResultsText:SetText(BROWSE_NO_RESULTS)
+	UpdateResultText()
 end)
-panel:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
-
 
 ns.RegisterCallback(panel, "AUCTION_QUERY_SENT", function(self, message, all_scan)
 	AuctionFrame.buyoutPrice = nil
-
-	if all_scan then
-		self:UnregisterEvent("AUCTION_ITEM_LIST_UPDATE")
-	else
-		self:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
-	end
 end)
 
 
