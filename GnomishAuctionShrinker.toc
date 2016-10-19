@@ -35,16 +35,17 @@ services\sort_auctions.lua
 frames\bid_button.lua
 frames\buyout_button.lua
 frames\columns.lua
-frames\header.lua
 frames\header_button.lua
+frames\header.lua
 frames\page_buttons.lua
+frames\panel.lua
 frames\results_count.lua
 frames\row.lua
 frames\row\bid.lua
 frames\row\buyout.lua
 frames\row\icon.lua
-frames\row\item.lua
 frames\row\ilevel.lua
+frames\row\item.lua
 frames\row\name.lua
 frames\row\qty.lua
 frames\row\required_level.lua
@@ -52,5 +53,7 @@ frames\row\seller.lua
 frames\row\time_left.lua
 frames\row\unit_buyout.lua
 frames\scroll_frame.lua
+frames\scrollbar_button.lua
+frames\scrollbar.lua
 
-GnomishAuctionShrinker.lua
+init.lua

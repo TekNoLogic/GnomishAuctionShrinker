@@ -18,24 +18,19 @@ local function Update()
 end
 
 
-local function SetOffset(value)
-	offset = value
-	Update()
-end
-
-
 function ns.CreateScrollFrame(parent, columns)
 	local frame = CreateFrame("Frame", nil, parent)
 	frame:SetAllPoints()
-
-	frame.SetOffset = SetOffset
-	frame.Update = Update
 
 	frame:SetScript("OnShow", Update)
 
 	ns.RegisterCallback(frame, "ANCILLARY_SORT_CHANGED", Update)
 	ns.RegisterCallback(frame, "AUCTION_ITEM_LIST_UPDATE", function()
 		ns.MarkSortDirty()
+		Update()
+	end)
+	ns.RegisterCallback(frame, "SCROLL_VALUE_CHANGE", function(self, message, value)
+		offset = value
 		Update()
 	end)
 

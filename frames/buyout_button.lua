@@ -10,6 +10,11 @@ ns.RegisterCallback(butt, "DIALOG_SHOWN", function(self)
 end)
 
 
+ns.RegisterCallback(butt, "AUCTION_QUERY_SENT", function()
+	AuctionFrame.buyoutPrice = nil
+end)
+
+
 ns.RegisterCallback(butt, "SELECTION_CHANGED", function(self, message, index)
 	if not index then return self:Disable() end
 
