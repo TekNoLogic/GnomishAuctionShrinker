@@ -5,3 +5,4 @@ messages.lua
 ui-about.lua
 ui-column-header.lua
 ui-page-button.lua
+ui-scrollbar.lua

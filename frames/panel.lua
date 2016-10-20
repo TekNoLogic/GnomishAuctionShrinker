@@ -2,9 +2,6 @@
 local myname, ns = ...
 
 
-local NUM_ROWS = 14
-
-
 local function UpdateResultText()
 	BrowseNoResultsText:SetShown(GetNumAuctionItems("list") == 0)
 end
@@ -22,26 +19,26 @@ function ns.CreatePanel()
 	panel:SetSize(605, 305)
 	panel:SetPoint("TOPLEFT", 188, -103)
 
+
 	local nextbutt = ns.CreateAuctionPageButton(panel, "Next")
 	nextbutt:SetPoint("BOTTOMRIGHT")
+
 
 	local prevbutt = ns.CreateAuctionPageButton(panel, "Prev")
 	prevbutt:SetPoint("RIGHT", nextbutt, "LEFT")
 
+
 	local counttext = ns.CreateResultsCount(panel)
 	counttext:SetPoint("RIGHT", prevbutt, "LEFT")
+
 
 	local columns = ns.CreateColumns(panel)
 	ns.CreateHeader(panel, columns)
 
+
 	local scrollframe = ns.CreateScrollFrame(panel, columns)
-	local scrollbar = ns.CreateScrollBar(panel, scrollframe, NUM_ROWS)
+	scrollframe:SetAllPoints()
 
-
-	panel:EnableMouseWheel(true)
-	panel:SetScript("OnMouseWheel", function(self, value)
-		scrollbar:RealSetValue(scrollbar:GetValue() - value*10)
-	end)
 
 	panel:SetScript("OnShow", UpdateResultText)
 

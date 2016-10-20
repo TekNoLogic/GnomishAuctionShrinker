@@ -17,8 +17,10 @@ Hide(BrowseLevelSort)
 Hide(BrowseNextPageButton)
 Hide(BrowsePrevPageButton)
 Hide(BrowseQualitySort)
+Hide(BrowseScrollFrameScrollBar)
+Hide(BrowseScrollFrameScrollBarScrollDownButton)
+Hide(BrowseScrollFrameScrollBarScrollUpButton)
 Hide(BrowseSearchCountText)
-
 
 -- Disable updates on default panel
 AuctionFrameBrowse:UnregisterEvent("AUCTION_ITEM_LIST_UPDATE")

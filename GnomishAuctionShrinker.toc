@@ -19,6 +19,7 @@ externals\messages.lua
 externals\ui-about.lua
 externals\ui-column-header.lua
 externals\ui-page-button.lua
+externals\ui-scrollbar.lua
 
 services\ancillary_sorter.lua
 services\can_buyout.lua
@@ -53,7 +54,5 @@ frames\row\seller.lua
 frames\row\time_left.lua
 frames\row\unit_buyout.lua
 frames\scroll_frame.lua
-frames\scrollbar_button.lua
-frames\scrollbar.lua
 
 init.lua
