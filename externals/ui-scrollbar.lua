@@ -81,9 +81,9 @@ local function OnMinMaxChanged(self, min, max, ...)
 end
 
 
-local function OnValueChanged(self, ...)
-	UpdateUpDown(self, self:GetValue())
-	if self.OnValueChanged then return self:OnValueChanged(...) end
+local function OnValueChanged(self, value, ...)
+	UpdateUpDown(self, value)
+	if self.OnValueChanged then return self:OnValueChanged(value, ...) end
 end
 
 
