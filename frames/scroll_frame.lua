@@ -24,27 +24,24 @@ local function OnListUpdate()
 end
 
 
-local function OnValueChanged(self, value, ...)
+local function OnValueChanged(self, value)
 	offset = value
 	UpdateRows()
 end
 
 
+local dirty
 local function UpdateScrollbar(self)
-	local num, total = GetNumAuctionItems("list")
-	if total > 0 then
-		if num-NUM_ROWS <= 0 then
-			self:Disable()
-		else
-			self:Enable()
-			self:SetMinMaxValues(0, num-NUM_ROWS)
-		end
-	end
+	if dirty then self:SetValue(0) end
+	dirty = false
+
+	local num_results = GetNumAuctionItems("list")
+	self:SetMinMaxValues(0, math.max(0, num_results - NUM_ROWS))
 end
 
 
 local function ResetScrollbar(self)
-	self:SetValue(0)
+	dirty = true
 end
 
 
@@ -69,6 +66,8 @@ function ns.CreateScrollFrame(parent, columns)
 	scrollbar:SetPoint("LEFT", frame, "RIGHT", 9, 0)
 	scrollbar:SetValueStep(10)
 
+	scrollbar.OnValueChanged = OnValueChanged
+
 
 	frame:EnableMouseWheel(true)
 	frame:SetScript("OnMouseWheel", function(self, value)
@@ -77,7 +76,7 @@ function ns.CreateScrollFrame(parent, columns)
 
 	frame:SetScript("OnShow", UpdateRows)
 	scrollbar:SetScript("OnShow", UpdateScrollbar)
-	scrollbar:SetScript("OnValueChanged", OnValueChanged)
+
 
 	ns.RegisterCallback(frame, "ANCILLARY_SORT_CHANGED", UpdateRows)
 	ns.RegisterCallback(frame, "AUCTION_ITEM_LIST_UPDATE", OnListUpdate)

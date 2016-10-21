@@ -41,10 +41,53 @@ local function Sound()
 end
 
 
+local ups, downs = {}, {}
+local function UpdateUpDown(self, value)
+	local up, down = ups[self], downs[self]
+	local min, max = self:GetMinMaxValues()
+	if value == min then up:Disable() else up:Enable() end
+	if value == max then down:Disable() else down:Enable() end
+end
+
+
+local function OnMinMaxChanged(self, min, max, ...)
+	local value = self:GetValue()
+
+	if value > max then
+		value = max
+		self:SetValue(value)
+	end
+	if value < min then
+		value = min
+		self:SetValue(value)
+	end
+
+	UpdateUpDown(self, value)
+
+	if self.OnMinMaxChanged then return self:OnMinMaxChanged(min, max, ...) end
+end
+
+
+local function OnValueChanged(self, ...)
+	UpdateUpDown(self, self:GetValue())
+	if self.OnValueChanged then return self:OnValueChanged(...) end
+end
+
+
+local OriginalSetScript
+local function SetScript(self, script, handler)
+	local existing = self:GetScript(script)
+	if existing then error("Cannot override ".. script) end
+	OriginalSetScript(self, script, handler)
+end
+
+
 function ns.CreateScrollBar(parent)
 	local slider = CreateFrame("Slider", nil, parent)
 	slider:SetWidth(16)
 
+	OriginalSetScript = slider.SetScript
+	slider.SetScript = SetScript
 	slider.Decrement = Decrement
 	slider.Increment = Increment
 	slider.OnMouseWheel = OnMouseWheel
@@ -69,6 +112,8 @@ function ns.CreateScrollBar(parent)
 	up:SetScript("OnClick", OnClickUp)
 	up:SetScript("PostClick", Sound)
 
+	ups[slider] = up
+
 	local down = CreateFrame("Button", nil, slider)
 	down:SetPoint("TOP", slider, "BOTTOM")
 	down:SetSize(16, 16)
@@ -86,20 +131,15 @@ function ns.CreateScrollBar(parent)
 	down:SetScript("OnClick", OnClickDown)
 	down:SetScript("PostClick", Sound)
 
+	downs[slider] = down
+
 	slider:SetThumbTexture("Interface\\Buttons\\UI-ScrollBar-Knob")
 	local thumb = slider:GetThumbTexture()
 	thumb:SetSize(16, 24)
 	thumb:SetTexCoord(1/4, 3/4, 1/8, 7/8)
 
-	local function UpdateUpDown(self)
-		local min, max = self:GetMinMaxValues()
-		local value = self:GetValue()
-		if value == min then up:Disable() else up:Enable() end
-		if value == max then down:Disable() else down:Enable() end
-	end
-
-	slider:HookScript("OnMinMaxChanged", UpdateUpDown)
-	slider:HookScript("OnValueChanged", UpdateUpDown)
+	slider:SetScript("OnMinMaxChanged", OnMinMaxChanged)
+	slider:SetScript("OnValueChanged", OnValueChanged)
 
 	slider:SetMinMaxValues(0, 0)
 	slider:SetValueStep(1)
