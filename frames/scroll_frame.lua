@@ -64,7 +64,8 @@ function ns.CreateScrollFrame(parent, columns)
 	scrollbar:SetPoint("TOP", 0, -20)
 	scrollbar:SetPoint("BOTTOM", 0, 18)
 	scrollbar:SetPoint("LEFT", frame, "RIGHT", 9, 0)
-	scrollbar:SetValueStep(10)
+	scrollbar:SetValueStep(7)
+	scrollbar:SetStepsPerPage(2)
 	scrollbar:AttachOnMouseWheel(frame)
 
 	scrollbar.OnValueChanged = OnValueChanged
