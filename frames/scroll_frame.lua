@@ -65,14 +65,10 @@ function ns.CreateScrollFrame(parent, columns)
 	scrollbar:SetPoint("BOTTOM", 0, 18)
 	scrollbar:SetPoint("LEFT", frame, "RIGHT", 9, 0)
 	scrollbar:SetValueStep(10)
+	scrollbar:AttachOnMouseWheel(frame)
 
 	scrollbar.OnValueChanged = OnValueChanged
 
-
-	frame:EnableMouseWheel(true)
-	frame:SetScript("OnMouseWheel", function(self, value)
-		scrollbar:OnMouseWheel(value)
-	end)
 
 	frame:SetScript("OnShow", UpdateRows)
 	scrollbar:SetScript("OnShow", UpdateScrollbar)

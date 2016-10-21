@@ -26,6 +26,19 @@ local function OnMouseWheel(self, wheel_value)
 end
 
 
+local proxies = {}
+local function OnMouseWheelProxy(self, ...)
+	return OnMouseWheel(proxies[self], ...)
+end
+
+
+local function AttachOnMouseWheel(self, frame)
+	proxies[frame] = self
+	frame:SetScript("OnMouseWheel", OnMouseWheelProxy)
+	frame:EnableMouseWheel(true)
+end
+
+
 local function OnClickUp(self)
 	self:GetParent():Decrement()
 end
@@ -91,6 +104,7 @@ function ns.CreateScrollBar(parent)
 	slider.Decrement = Decrement
 	slider.Increment = Increment
 	slider.OnMouseWheel = OnMouseWheel
+	slider.AttachOnMouseWheel = AttachOnMouseWheel
 
 	slider:EnableMouseWheel(true)
 	slider:SetScript("OnMouseWheel", OnMouseWheel)
