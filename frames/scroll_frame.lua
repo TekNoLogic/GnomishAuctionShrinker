@@ -24,6 +24,12 @@ local function OnListUpdate()
 end
 
 
+local function OnQuerySent(self, mesage, all_scan)
+	if not all_scan then return end
+	for _,row in pairs(rows) do row:Hide() end
+end
+
+
 local function OnValueChanged(self, value)
 	offset = value
 	UpdateRows()
@@ -77,6 +83,7 @@ function ns.CreateScrollFrame(parent, columns)
 
 	ns.RegisterCallback(frame, "ANCILLARY_SORT_CHANGED", UpdateRows)
 	ns.RegisterCallback(frame, "AUCTION_ITEM_LIST_UPDATE", OnListUpdate)
+	ns.RegisterCallback(frame, "AUCTION_QUERY_SENT", OnQuerySent)
 	ns.RegisterCallback(scrollbar, "AUCTION_ITEM_LIST_UPDATE", UpdateScrollbar)
 	ns.RegisterCallback(scrollbar, "AUCTION_QUERY_SENT", ResetScrollbar)
 

@@ -19,8 +19,12 @@ local function Update(self)
 end
 
 
-local function OnQuerySent(self)
-	self:Disable()
+local function OnQuerySent(self, message, all_scan)
+	if all_scan then
+		self:Hide()
+	else
+		self:Disable()
+	end
 end
 
 

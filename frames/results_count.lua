@@ -16,13 +16,19 @@ local function Update()
 end
 
 
+local function OnQuerySent(self, message, all_scan)
+	if all_scan then count:Hide() end
+end
+
+
 function ns.CreateResultsCount(parent)
 	count = parent:CreateFontString(nil, nil, "GameFontHighlightSmall")
 
 	local frame = CreateFrame("Frame", nil, parent)
-	frame:SetScript("OnEvent", Update)
 	frame:SetScript("OnShow", Update)
-	frame:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
+
+	ns.RegisterCallback(count, "AUCTION_ITEM_LIST_UPDATE", Update)
+	ns.RegisterCallback(count, "AUCTION_QUERY_SENT", OnQuerySent)
 
 	return count
 end
