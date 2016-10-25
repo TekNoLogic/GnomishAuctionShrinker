@@ -27,8 +27,8 @@ function ns.CreateResultsCount(parent)
 	local frame = CreateFrame("Frame", nil, parent)
 	frame:SetScript("OnShow", Update)
 
-	ns.RegisterCallback(count, "AUCTION_ITEM_LIST_UPDATE", Update)
-	ns.RegisterCallback(count, "AUCTION_QUERY_SENT", OnQuerySent)
+	ns.RegisterCallback(count, "_AUCTION_ITEM_LIST_UPDATE", Update)
+	ns.RegisterCallback(count, "_AUCTION_QUERY_SENT", OnQuerySent)
 
 	return count
 end

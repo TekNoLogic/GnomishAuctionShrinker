@@ -5,7 +5,7 @@ local myname, ns = ...
 local butt = BrowseBidButton
 
 
-ns.RegisterCallback(butt, "DIALOG_SHOWN", function(self)
+ns.RegisterCallback(butt, "_DIALOG_SHOWN", function(self)
 	self:Disable()
 end)
 
@@ -24,7 +24,7 @@ local function CanBid(index)
 end
 
 
-ns.RegisterCallback(butt, "SELECTION_CHANGED", function(self, message, index)
+ns.RegisterCallback(butt, "_SELECTION_CHANGED", function(self, message, index)
 	if not index then return self:Disable() end
 
 	if CanBid(index) then

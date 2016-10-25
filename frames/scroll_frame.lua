@@ -81,11 +81,11 @@ function ns.CreateScrollFrame(parent, columns)
 	scrollbar:SetScript("OnShow", UpdateScrollbar)
 
 
-	ns.RegisterCallback(frame, "ANCILLARY_SORT_CHANGED", UpdateRows)
-	ns.RegisterCallback(frame, "AUCTION_ITEM_LIST_UPDATE", OnListUpdate)
-	ns.RegisterCallback(frame, "AUCTION_QUERY_SENT", OnQuerySent)
-	ns.RegisterCallback(scrollbar, "AUCTION_ITEM_LIST_UPDATE", UpdateScrollbar)
-	ns.RegisterCallback(scrollbar, "AUCTION_QUERY_SENT", ResetScrollbar)
+	ns.RegisterCallback(frame, "_ANCILLARY_SORT_CHANGED", UpdateRows)
+	ns.RegisterCallback(frame, "_AUCTION_ITEM_LIST_UPDATE", OnListUpdate)
+	ns.RegisterCallback(frame, "_AUCTION_QUERY_SENT", OnQuerySent)
+	ns.RegisterCallback(scrollbar, "_AUCTION_ITEM_LIST_UPDATE", UpdateScrollbar)
+	ns.RegisterCallback(scrollbar, "_AUCTION_QUERY_SENT", ResetScrollbar)
 
 
 	return frame

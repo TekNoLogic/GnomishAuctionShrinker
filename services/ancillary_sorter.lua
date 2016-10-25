@@ -70,7 +70,7 @@ function ns.ToggleUnitPriceSort()
 
 	dirty = true
 
-	ns.SendMessage("ANCILLARY_SORT_CHANGED")
+	ns.SendMessage("_ANCILLARY_SORT_CHANGED")
 end
 
 
@@ -90,7 +90,7 @@ function ns.ToggleItemlevelSort()
 
 	dirty = true
 
-	ns.SendMessage("ANCILLARY_SORT_CHANGED")
+	ns.SendMessage("_ANCILLARY_SORT_CHANGED")
 end
 
 
@@ -105,7 +105,7 @@ function ns.GetSortedResults()
 end
 
 
-ns.RegisterCallback({}, "AUCTION_QUERY_SENT", function(self, message, all_scan)
+ns.RegisterCallback({}, "_AUCTION_QUERY_SENT", function(self, message, all_scan)
 	if all_scan then sortbyunit, sortbyilvl = false, false end
 	dirty = true
 end)

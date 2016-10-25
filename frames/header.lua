@@ -40,7 +40,7 @@ function ns.CreateHeader(parent, columns)
 		if sortbyilvl == 1 then sort = "ASC" end
 		self:SetSort(sort)
 	end
-	ns.RegisterCallback(ilvlsort, "ANCILLARY_SORT_CHANGED", ilvlsort.UpdateArrow)
+	ns.RegisterCallback(ilvlsort, "_ANCILLARY_SORT_CHANGED", ilvlsort.UpdateArrow)
 	ilvlsort:SetScript("OnClick", ns.ToggleItemlevelSort)
 
 
@@ -66,7 +66,7 @@ function ns.CreateHeader(parent, columns)
 	function unitsort:UpdateArrow()
 		self:SetSort(ns.GetUnitPriceSort() and "ASC")
 	end
-	ns.RegisterCallback(unitsort, "ANCILLARY_SORT_CHANGED", unitsort.UpdateArrow)
+	ns.RegisterCallback(unitsort, "_ANCILLARY_SORT_CHANGED", unitsort.UpdateArrow)
 	unitsort:SetScript("OnClick", ns.ToggleUnitPriceSort)
 
 

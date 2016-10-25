@@ -94,8 +94,8 @@ function ns.CreateAuctionRow(parent, columns)
 	row:SetHighlightTexture("Interface\\HelpFrame\\HelpFrameButton-Highlight")
 	row:GetHighlightTexture():SetTexCoord(0, 1, 0, 0.578125)
 
-	ns.RegisterCallback(row, "AUCTION_QUERY_SENT", OnQuerySent)
-	ns.RegisterCallback(row, "SELECTION_CHANGED", OnSelectionChanged)
+	ns.RegisterCallback(row, "_AUCTION_QUERY_SENT", OnQuerySent)
+	ns.RegisterCallback(row, "_SELECTION_CHANGED", OnSelectionChanged)
 
 	local kids = {}
 	children[row] = kids

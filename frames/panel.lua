@@ -43,5 +43,5 @@ function ns.CreatePanel()
 	panel:SetScript("OnShow", UpdateResultText)
 
 
-	ns.RegisterCallback(panel, "AUCTION_ITEM_LIST_UPDATE", OnListUpdate)
+	ns.RegisterCallback(panel, "_AUCTION_ITEM_LIST_UPDATE", OnListUpdate)
 end

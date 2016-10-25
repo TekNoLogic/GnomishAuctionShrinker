@@ -8,7 +8,7 @@ local WHICHES = {
 }
 local function OnShow(self)
 	if self.which and WHICHES[self.which] and self:IsShown() then
-		ns.SendMessage("DIALOG_SHOWN")
+		ns.SendMessage("_DIALOG_SHOWN")
 	end
 end
 

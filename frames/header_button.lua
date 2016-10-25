@@ -50,8 +50,8 @@ function ns.CreateHeaderButton(parent, text, column)
 	butt:SetScript("OnClick", OnClick)
 	butt:SetScript("OnShow", OnShow)
 
-	ns.RegisterCallback(butt, "AUCTION_QUERY_SENT", OnQuerySent)
-	ns.RegisterCallback(butt, "AUCTION_QUERY_COMPLETE", OnQueryComplete)
+	ns.RegisterCallback(butt, "_AUCTION_QUERY_SENT", OnQuerySent)
+	ns.RegisterCallback(butt, "_AUCTION_QUERY_COMPLETE", OnQueryComplete)
 
 	butt:UpdateArrow()
 
