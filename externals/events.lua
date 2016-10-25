@@ -1,43 +1,60 @@
 
+-- This module manages offical client events like "UNIT_AURA" as well as custom
+-- intra-addon messages.  Special handling of savedvariables happens on load and
+-- player logout, along with some custom messages to signal when certain data
+-- has been initialized.
+
+-- Login event order is as follows:
+-- * Addon code is loaded
+-- * Savedvars are initialized if `ns.dbname` or `ns.dbpcname` have been set
+-- * "_THIS_ADDON_LOADED" message is sent
+-- * "ADDON_LOADED" event triggered by this addon is dispatched to callbacks
+-- * "PLAYER_LOGIN" event is fired by the system if loaded on login, otherwise
+--   one is generated if we were loaded on demand
+
+-- Logout event order is as follows:
+-- * Default values are erased from savedvars if `ns.dbdefaults` or
+--   `ns.dbpcdefaults` are defined
+-- * "PLAYER_LOGOUT" event is dispatched to callbacks
+
+
 local myname, ns = ...
 
 
+local NOOP = function() end
+
+
+local callbacks = {}
 local frame = CreateFrame("Frame")
+function ns.RegisterCallback(context, message, func)
+	assert(context, "`context` must not be nil")
+	assert(message, "`message` must not be nil")
+	if not callbacks[message] then callbacks[message] = {} end
+	callbacks[message][context] = func
 
-
-function ns.RegisterEvent(event, func)
-	frame:RegisterEvent(event)
-	if func then ns[event] = func end
-end
-
-
-function ns.UnregisterEvent(event)
-	frame:UnregisterEvent(event)
-end
-
-
-function ns.UnregisterAllEvents()
-	frame:UnregisterAllEvents()
-end
-
-
--- Handles special OnLogin code for when the PLAYER_LOGIN event is fired.
--- If our addon is loaded after that event is fired, then we call it immediately
--- after the OnLoad handler is processed.
-local function ProcessOnLogin()
-	if ns.OnLogin then
-		ns.OnLogin()
-		ns.OnLogin = nil
+	if next(callbacks[message]) then
+		frame:RegisterEvent(message)
+	else
+		frame:UnregisterEvent(message)
 	end
-
-	ProcessOnLogin = nil
-	if not ns.PLAYER_LOGIN then frame:UnregisterEvent("PLAYER_LOGIN") end
 end
 
 
--- Handle special OnLoad code when our addon has loaded, if present
--- Also initializes the savedvar for us, if ns.dbname or ns.dbpcname is set
--- If ns.ADDON_LOADED is defined, the ADDON_LOADED event is not unregistered
+function ns.UnregisterCallback(context, message)
+	ns.RegisterCallback(context, message, nil)
+end
+
+
+function ns.SendMessage(message, ...)
+	assert(message, "`message` must not be nil")
+	if not callbacks[message] then return end
+
+	for context,func in pairs(callbacks[message]) do
+		func(context, message, ...)
+	end
+end
+
+
 local function ProcessOnLoad(arg1)
 	if arg1 ~= myname then return end
 
@@ -53,29 +70,18 @@ local function ProcessOnLoad(arg1)
 		ns.dbpc = _G[ns.dbpcname]
 	end
 
-	for i,v in pairs(ns) do
-		if i:match("^OnLoad.") then
-			ns[i]()
-			ns[i] = nil
-		end
-	end
-
-	if ns.OnLoad then
-		ns.OnLoad()
-		ns.OnLoad = nil
-	end
+	ns.SendMessage("_THIS_ADDON_LOADED")
+	callbacks["_THIS_ADDON_LOADED"] = nil
 
 	ProcessOnLoad = nil
-	if not ns.ADDON_LOADED then frame:UnregisterEvent("ADDON_LOADED") end
+	ns.UnregisterCallback(frame, "ADDON_LOADED")
 
-	if ns.dbdefaults or ns.dbpcdefaults then ns.RegisterEvent("PLAYER_LOGOUT") end
-
-	if IsLoggedIn() then ProcessOnLogin()
-	else frame:RegisterEvent("PLAYER_LOGIN") end
+	if ns.dbdefaults or ns.dbpcdefaults then
+		ns.RegisterCallback(frame, "PLAYER_LOGOUT", NOOP)
+	end
 end
 
 
--- Removes the default values from the db and dbpc as we're logging out
 local function ProcessLogout()
 	if ns.dbdefaults then
 		for i,v in pairs(ns.dbdefaults) do
@@ -91,11 +97,17 @@ local function ProcessLogout()
 end
 
 
-frame:RegisterEvent("ADDON_LOADED")
 frame:SetScript("OnEvent", function(self, event, arg1, ...)
 	if ProcessOnLoad and event == "ADDON_LOADED" then ProcessOnLoad(arg1) end
-	if ProcessOnLogin and event == "PLAYER_LOGIN" then ProcessOnLogin() end
-
 	if event == "PLAYER_LOGOUT" then ProcessLogout() end
-	if ns[event] then ns[event](event, arg1, ...) end
+
+	ns.SendMessage(event, arg1, ...)
+
+	-- If we were loaded on demand, make sure a "PLAYER_LOGIN" message is sent
+	if event == "ADDON_LOADED" and arg1 == myname and IsLoggedIn() then
+		ns.SendMessage("PLAYER_LOGIN")
+	end
 end)
+
+
+ns.RegisterCallback(frame, "ADDON_LOADED", NOOP)
