@@ -50,8 +50,7 @@ function ns.CreateAuctionPageButton(parent, type)
 	butt:SetScript("OnClick", OnClick)
 	butt:SetScript("OnShow", Update)
 
-	ns.RegisterCallback(butt, "AUCTION_ITEM_LIST_UPDATE", Update)
-
+	ns.RegisterCallback(butt, "_AUCTION_ITEM_LIST_UPDATE", Update)
 	ns.RegisterCallback(butt, "_AUCTION_QUERY_SENT", OnQuerySent)
 	ns.RegisterCallback(butt, "_AUCTION_QUERY_COMPLETE", OnQueryComplete)
 

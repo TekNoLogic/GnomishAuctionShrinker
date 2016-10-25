@@ -13,9 +13,9 @@ end
 
 local function OnAuctionQuerySent(self, message, all_scan)
 	if all_scan then
-		ns.UnregisterCallback("AUCTION_ITEM_LIST_UPDATE")
+		ns.UnregisterCallback(self, "AUCTION_ITEM_LIST_UPDATE")
 	else
-		ns.RegisterCallback("AUCTION_ITEM_LIST_UPDATE", OnAuctionItemListUpdate)
+		ns.RegisterCallback(self, "AUCTION_ITEM_LIST_UPDATE", OnAuctionItemListUpdate)
 	end
 end
 
