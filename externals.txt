@@ -1,7 +1,6 @@
 events.lua
 gsc.lua
 item_colors.lua
-messages.lua
 ui-about.lua
 ui-column-header.lua
 ui-page-button.lua
