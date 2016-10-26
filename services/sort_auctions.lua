@@ -21,7 +21,7 @@ local SORTS = {
 		"quantity",      false,
 	},
 }
-for _,column in pairs({"level", "duration", "seller", "bid", "quality"}) do
+for _,column in pairs({"level", "duration", "seller", "unitprice", "quality"}) do
 	local data = AuctionSort["list_"..column]
 	local sort = {}
 	for i,v in ipairs(data) do
