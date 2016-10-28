@@ -6,7 +6,7 @@ local function SetValue(self, index)
 	if not index then return self:SetText() end
 
 	local buyout = ns.GetBuyout(index)
-	self:SetText(buyout > 0 and ns.GS(buyout) or "----")
+	self:SetText(ns.FormatGold(buyout))
 end
 
 

@@ -2,22 +2,20 @@
 local myname, ns = ...
 
 
+local function GetUnitBuyout(index)
+	local buyout = ns.GetBuyout(index)
+	if buyout == 0 then return end
+
+	local _, _, count = GetAuctionItemInfo("list", index)
+	return buyout/count
+end
+
+
 local function SetValue(self, index)
 	if not index then return self:SetText() end
 
-	local buyout = ns.GetBuyout(index)
-
-	if buyout > 0 then
-		local _, _, count = GetAuctionItemInfo("list", index)
-		local item_id = ns.GetAuctionItemID(index)
-		local _, _, _, _, _, _, _, stack = GetItemInfo(item_id)
-		if stack and stack > 1 then
-			local unit = math.ceil(buyout/count)
-			return self:SetText(ns.GSC(unit))
-		end
-	end
-
-	self:SetText("----")
+	local buyout = GetUnitBuyout(index)
+	return self:SetText(ns.FormatGold(buyout))
 end
 
 

@@ -13,7 +13,7 @@ end
 
 local function SetValue(self, index)
 	if not index then return self:SetText() end
-	self:SetText(ns.GS(GetDisplayedBid(index)) or "----")
+	self:SetText(ns.FormatGold(GetDisplayedBid(index)))
 end
 
 
