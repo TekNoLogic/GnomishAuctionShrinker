@@ -3,18 +3,8 @@ local myname, ns = ...
 
 
 local dirty = false
-local sortbyunit = true
 local sortbyilvl = false
 local sorttable = {}
-
-
-local function UnitPriceSorter(a,b)
-	local _, _, counta, _, _, _, _, _, _, buyouta = GetAuctionItemInfo("list", a)
-	local _, _, countb, _, _, _, _, _, _, buyoutb = GetAuctionItemInfo("list", b)
-	if not buyouta then return false end
-	if not buyoutb then return true end
-	return buyouta/counta < buyoutb/countb
-end
 
 
 local function ItemlevelSorter(a,b)
@@ -51,26 +41,8 @@ local function FetchSortedList(sorter)
 end
 
 
-function ns.GetUnitPriceSort()
-	return sortbyunit
-end
-
-
 function ns.GetItemlevelSort()
 	return sortbyilvl
-end
-
-
-function ns.ToggleUnitPriceSort()
-	-- Failsafe, don't let sorting be enabled when we have done an all-scan
-	if GetNumAuctionItems("list") > 100 then return end
-
-	sortbyunit = not sortbyunit
-	if sortbyunit then sortbyilvl = false end
-
-	dirty = true
-
-	ns.SendMessage("_ANCILLARY_SORT_CHANGED")
 end
 
 
@@ -80,10 +52,8 @@ function ns.ToggleItemlevelSort()
 
 	if sortbyilvl == 1 then
 		sortbyilvl = -1
-		sortbyunit = false
 	elseif sortbyilvl == false then
 		sortbyilvl = 1
-		sortbyunit = false
 	else
 		sortbyilvl = false
 	end
@@ -100,12 +70,11 @@ end
 
 
 function ns.GetSortedResults()
-	if sortbyunit then return FetchSortedList(UnitPriceSorter) end
 	if sortbyilvl then return FetchSortedList(ItemlevelSorter) end
 end
 
 
 ns.RegisterCallback({}, "_AUCTION_QUERY_SENT", function(self, message, all_scan)
-	if all_scan then sortbyunit, sortbyilvl = false, false end
+	if all_scan then sortbyilvl = false end
 	dirty = true
 end)

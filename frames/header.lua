@@ -52,7 +52,7 @@ function ns.CreateHeader(parent, columns)
 	AnchorSort(durationsort, columns[5], header)
 
 
-	local bidsort = ns.CreateHeaderButton(header, "Bid", "bid")
+	local bidsort = ns.CreateHeaderButton(header, "Bid")
 	AnchorSort(bidsort, columns[6], header)
 
 
@@ -60,14 +60,8 @@ function ns.CreateHeader(parent, columns)
 	AnchorSort(buyoutsort, columns[7], header)
 
 
-	local unitsort = ns.CreateHeaderButton(header, "Unit BO")
+	local unitsort = ns.CreateHeaderButton(header, "Unit BO", "unitprice")
 	AnchorSort(unitsort, columns[8], header)
-
-	function unitsort:UpdateArrow()
-		self:SetSort(ns.GetUnitPriceSort() and "ASC")
-	end
-	ns.RegisterCallback(unitsort, "_ANCILLARY_SORT_CHANGED", unitsort.UpdateArrow)
-	unitsort:SetScript("OnClick", ns.ToggleUnitPriceSort)
 
 
 	local qtysort = ns.CreateHeaderButton(header, "#", "quantity")
