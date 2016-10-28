@@ -12,7 +12,8 @@ local function SetValue(self, index)
 		local item_id = ns.GetAuctionItemID(index)
 		local _, _, _, _, _, _, _, stack = GetItemInfo(item_id)
 		if stack and stack > 1 then
-			return self:SetText(ns.GS(buyout/count))
+			local unit = math.ceil(buyout/count)
+			return self:SetText(ns.GSC(unit))
 		end
 	end
 
