@@ -35,7 +35,7 @@ end
 
 local function OnQueryComplete(self, message, all_scan)
 	if all_scan then return end
-	self:Enable()
+	if columns[self] then self:Enable() end
 end
 
 
@@ -54,6 +54,8 @@ function ns.CreateHeaderButton(parent, text, column)
 	ns.RegisterCallback(butt, "_AUCTION_QUERY_COMPLETE", OnQueryComplete)
 
 	butt:UpdateArrow()
+
+	if not column then butt:Disable() end
 
 	return butt
 end
