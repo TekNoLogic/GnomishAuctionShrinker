@@ -20,7 +20,6 @@ externals\ui-column-header.lua
 externals\ui-page-button.lua
 externals\ui-scrollbar.lua
 
-services\ancillary_sorter.lua
 services\can_buyout.lua
 services\dialog_shown.lua
 services\get_auction_item_id.lua

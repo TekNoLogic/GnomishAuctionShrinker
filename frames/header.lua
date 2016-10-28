@@ -33,16 +33,6 @@ function ns.CreateHeader(parent, columns)
 	local ilvlsort = ns.CreateHeaderButton(header, "iLvl")
 	AnchorSort(ilvlsort, columns[3], header)
 
-	function ilvlsort:UpdateArrow()
-		local sort
-		local sortbyilvl = ns.GetItemlevelSort()
-		if sortbyilvl == -1 then sort = "DESC" end
-		if sortbyilvl == 1 then sort = "ASC" end
-		self:SetSort(sort)
-	end
-	ns.RegisterCallback(ilvlsort, "_ANCILLARY_SORT_CHANGED", ilvlsort.UpdateArrow)
-	ilvlsort:SetScript("OnClick", ns.ToggleItemlevelSort)
-
 
 	local sellersort = ns.CreateHeaderButton(header, "Seller", "seller")
 	AnchorSort(sellersort, columns[4], header)

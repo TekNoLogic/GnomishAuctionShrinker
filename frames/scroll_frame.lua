@@ -10,17 +10,7 @@ local ROW_HEIGHT = math.floor((305-BOTTOM_GAP)/NUM_ROWS)
 local rows = {}
 local offset = 0
 local function UpdateRows()
-	local sorted = ns.GetSortedResults()
-	for i,row in ipairs(rows) do
-		local index = sorted and sorted[offset + i] or (offset + i)
-		row:SetValue(index)
-	end
-end
-
-
-local function OnListUpdate()
-	ns.MarkSortDirty()
-	UpdateRows()
+	for i,row in ipairs(rows) do row:SetValue(offset + i) end
 end
 
 
@@ -81,8 +71,7 @@ function ns.CreateScrollFrame(parent, columns)
 	scrollbar:SetScript("OnShow", UpdateScrollbar)
 
 
-	ns.RegisterCallback(frame, "_ANCILLARY_SORT_CHANGED", UpdateRows)
-	ns.RegisterCallback(frame, "_AUCTION_ITEM_LIST_UPDATE", OnListUpdate)
+	ns.RegisterCallback(frame, "_AUCTION_ITEM_LIST_UPDATE", UpdateRows)
 	ns.RegisterCallback(frame, "_AUCTION_QUERY_SENT", OnQuerySent)
 	ns.RegisterCallback(scrollbar, "_AUCTION_ITEM_LIST_UPDATE", UpdateScrollbar)
 	ns.RegisterCallback(scrollbar, "_AUCTION_QUERY_SENT", ResetScrollbar)
