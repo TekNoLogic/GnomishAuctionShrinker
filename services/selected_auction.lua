@@ -23,5 +23,5 @@ local function ClearSelection()
 end
 
 
-ns.RegisterCallback({}, "_AUCTION_QUERY_SENT", ClearSelection)
+ns.RegisterCallback("_AUCTION_QUERY_SENT", ClearSelection)
 hooksecurefunc("PlaceAuctionBid", ClearSelection)
