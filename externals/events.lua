@@ -27,6 +27,11 @@ local NOOP = function() end
 local callbacks = {}
 local frame = CreateFrame("Frame")
 function ns.RegisterCallback(context, message, func)
+	-- Allow context-less calls like ns.RegisterCallback("PLAYER_LOGIN", OnLogin)
+	if type(context) == "string" and type(message) == "function" then
+		context, message, func = message, context, message
+	end
+
 	assert(context, "`context` must not be nil")
 	assert(message, "`message` must not be nil")
 	if not callbacks[message] then callbacks[message] = {} end
@@ -106,7 +111,11 @@ frame:SetScript("OnEvent", function(self, event, arg1, ...)
 	-- If we were loaded on demand, make sure a "PLAYER_LOGIN" message is sent
 	if event == "ADDON_LOADED" and arg1 == myname and IsLoggedIn() then
 		ns.SendMessage("PLAYER_LOGIN")
+		callbacks["PLAYER_LOGIN"] = nil
 	end
+
+	-- We don't need to hold on to these callbacks once the event has fired
+	if event == "PLAYER_LOGIN" then callbacks["PLAYER_LOGIN"] = nil end
 end)
 
 
