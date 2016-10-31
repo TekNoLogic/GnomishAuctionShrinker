@@ -20,5 +20,6 @@ local function OnAuctionQuerySent(self, message, all_scan)
 end
 
 
-ns.RegisterCallback("AUCTION_ITEM_LIST_UPDATE", OnAuctionItemListUpdate)
-ns.RegisterCallback("_AUCTION_QUERY_SENT", OnAuctionQuerySent)
+local C = {}
+ns.RegisterCallback(C, "AUCTION_ITEM_LIST_UPDATE", OnAuctionItemListUpdate)
+ns.RegisterCallback(C, "_AUCTION_QUERY_SENT", OnAuctionQuerySent)
